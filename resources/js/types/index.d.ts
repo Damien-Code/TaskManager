@@ -18,6 +18,14 @@ export interface NavItem {
     isActive?: boolean;
 }
 
+export interface Task{
+    id: number;
+    name: string;
+    is_completed: boolean;
+    created_at: string;
+    updated_at: string;
+}
+
 export interface SharedData extends PageProps {
     name: string;
     quote: { message: string; author: string };
