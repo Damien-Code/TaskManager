@@ -7,6 +7,16 @@ import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem, type Task } from '@/types';
 import { Head, useForm } from '@inertiajs/vue3';
+import { Calendar } from '@/components/ui/calendar';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { cn } from '@/lib/utils';
+import { DateFormatter, fromDate, getLocalTimeZone } from '@internationalized/date';
+import { CalendarIcon } from 'lucide-vue-next';
+
+
+const df = new DateFormatter('en-US', {
+    dateStyle: 'long',
+});
 
 interface Props {
     task: Task;
@@ -25,12 +35,28 @@ const task = props.task;
 const form = useForm({
     name: task.name,
     is_completed: task.is_completed,
+    due_date: task.due_date ? fromDate(new Date(task.due_date)) : null,
+    media: '',
 });
 
 const submitForm = () => {
-    form.put(route('tasks.update', task.id), {
-        preserveScroll: true,
-    });
+        form.transform((data) => ({
+            ...data,
+            due_date: data.due_date ? data.due_date.toDate(getLocalTimeZone()) : null,
+        })).put(route('tasks.update', task.id), {
+            forceFormData: true,
+            preserveScroll: true,
+        });
+    };
+const fileSelected = (event: Event) => {
+    const target = event.target as HTMLInputElement;
+    const file = target.files?.[0];
+
+    if (!file) {
+        return;
+    }
+
+    form.media = file;
 };
 </script>
 
@@ -46,6 +72,26 @@ const submitForm = () => {
 
                     <InputError :message="form.errors.name" />
                 </div>
+                <div class="grid gap-2">
+                    <Label htmlFor="name">Due Date</Label>
+
+                    <Popover>
+                        <PopoverTrigger as-child>
+                            <Button
+                                variant="outline"
+                                :class="cn('w-[280px] justify-start text-left font-normal', !form.due_date && 'text-muted-foreground')"
+                            >
+                                <CalendarIcon class="mr-2 h-4 w-4" />
+                                {{ form.due_date ? df.format(new Date(form.due_date.toDate(getLocalTimeZone()))) : 'Pick a date' }}
+                            </Button>
+                        </PopoverTrigger>
+                        <PopoverContent class="w-auto p-0">
+                            <Calendar v-model="form.due_date" initial-focus />
+                        </PopoverContent>
+                    </Popover>
+
+                    <InputError :message="form.errors.due_date" />
+                </div>
 
                 <div class="grid gap-2">
                     <Label htmlFor="is_completed">Completed?</Label>
@@ -53,6 +99,18 @@ const submitForm = () => {
                     <Switch id="is_completed" v-model="form.is_completed" class="mt-1" />
 
                     <InputError :message="form.errors.is_completed" />
+                </div>
+
+                <div class="grid gap-2">
+                    <Label htmlFor="name">Media</Label>
+
+                    <Input type="file" id="name" v-on:change="fileSelected($event)" class="mt-1 block w-full" />
+
+                    <progress v-if="form.progress" :value="form.progress.percentage" max="100">{form.progress.percentage}%</progress>
+
+                    <InputError :message="form.errors.media" />
+
+                    <img v-if="task.mediaFile" :src="task.mediaFile.original_url" class="w-32 h-32 rounded-lg mx-auto mt-2" alt="image" />
                 </div>
 
                 <div class="flex items-center gap-4">
