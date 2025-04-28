@@ -28,6 +28,15 @@ export interface Task{
     updated_at: string;
 }
 
+export interface TaskCategory {
+    id: number;
+    name: string;
+    tasks_count: number | null;
+    tasks: Task[] | null;
+    created_at: string;
+    updated_at: string;
+}
+
 export interface MediaFile {
     id: number,
     model_type: string,

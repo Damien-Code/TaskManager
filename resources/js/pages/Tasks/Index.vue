@@ -36,6 +36,7 @@ const deleteTask = (id: number) => {
 
         <div class="mt-4">
             <Link :class="buttonVariants({ variant: 'outline' })" href="/tasks/create"> Create Task </Link>
+            <Link :class="buttonVariants({ variant: 'outline' })" href="/task-categories"> Manage Task Categories</Link>
         </div>
         <Table>
             <TableHeader>
@@ -52,7 +53,7 @@ const deleteTask = (id: number) => {
                     <TableCell>{{ task.name }}</TableCell>
                     <TableCell>
                         <a v-if="task.mediaFile" :href="task.mediaFile.original_url" target="_blank">
-                            <img :src="task.mediaFile.original_url" class="h-8 w-8" alt="image"/>
+                            <img :src="task.mediaFile.original_url" class="h-8 w-8" />
                         </a>
                     </TableCell>
                     <TableCell :class="{ 'text-green-600': task.is_completed, 'text-red-700': !task.is_completed }">

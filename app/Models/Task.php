@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Task extends Model implements HasMedia
 {
@@ -18,6 +19,11 @@ class Task extends Model implements HasMedia
         'is_completed',
         'due_date'
     ];
+
+    public function taskCategories(): BelongsToMany
+    {
+        return $this->belongsToMany(TaskCategory::class);
+    }
 
     protected function casts(): array
     {

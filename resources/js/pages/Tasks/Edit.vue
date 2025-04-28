@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem, type Task } from '@/types';
-import { Head, useForm } from '@inertiajs/vue3';
+import { Head, useForm, router } from '@inertiajs/vue3';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
@@ -38,26 +38,29 @@ const form = useForm({
     due_date: task.due_date ? fromDate(new Date(task.due_date)) : null,
     media: '',
 });
-
 const submitForm = () => {
-        form.transform((data) => ({
-            ...data,
-            due_date: data.due_date ? data.due_date.toDate(getLocalTimeZone()) : null,
-        })).put(route('tasks.update', task.id), {
+    router.post(
+        route('tasks.update', task.id),
+        {
+            ...form.data(),
+            due_date: form.data().due_date ? form.data().due_date.toDate(getLocalTimeZone()) : null,
+            _method: 'PUT'
+        },
+        {
             forceFormData: true,
             preserveScroll: true,
-        });
+        },
+    );
+    const fileSelected = (event: Event) => {
+        const target = event.target as HTMLInputElement;
+        const file = target.files?.[0];
+
+        if (!file) {
+            return;
+        }
+        form.media = file;
     };
-const fileSelected = (event: Event) => {
-    const target = event.target as HTMLInputElement;
-    const file = target.files?.[0];
-
-    if (!file) {
-        return;
-    }
-
-    form.media = file;
-};
+}
 </script>
 
 <template>
