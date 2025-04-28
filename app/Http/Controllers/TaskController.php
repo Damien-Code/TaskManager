@@ -23,7 +23,7 @@ class TaskController extends Controller
                     $query->whereHas('taskCategories', function ($query) use ($request) {
                         $query->whereIn('id', $request->query('categories'));
                     });
-                })->paginate(5)
+                })->paginate(15)
                 ->withQueryString(),
             'categories' => TaskCategory::whereHas('tasks')->withCount('tasks')->get(),
             'selectedCategories' => $request->query('categories'),
