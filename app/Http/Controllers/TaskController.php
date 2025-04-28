@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreTaskRequest;
 use App\Models\Task;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -29,9 +30,10 @@ class TaskController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreTaskRequest $request)
     {
         Task::create($request->validated() + ['is_completed' => false]);
+
         return redirect()->route('tasks.index');
     }
 
