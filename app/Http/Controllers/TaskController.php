@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreTaskRequest;
+use App\Http\Requests\UpdateTaskRequest;
 use App\Models\Task;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -15,6 +16,7 @@ class TaskController extends Controller
     public function index()
     {
         return Inertia::render('Tasks/Index', [
+            //'tasks' => Task::paginate(5),
             'tasks' => Task::all(),
         ]);
     }
@@ -58,7 +60,7 @@ class TaskController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Task $task)
+    public function update(UpdateTaskRequest $request, Task $task)
     {
         $task->update($request->validated());
         return redirect()->route('tasks.index');
