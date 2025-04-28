@@ -8,7 +8,7 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-    resource: undefined,
+    resource: null,
 });
 </script>
 

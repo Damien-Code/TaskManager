@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -20,10 +21,7 @@ class Task extends Model implements HasMedia
         'due_date'
     ];
 
-    public function taskCategories(): BelongsToMany
-    {
-        return $this->belongsToMany(TaskCategory::class);
-    }
+
 
     protected function casts(): array
     {
@@ -46,5 +44,9 @@ class Task extends Model implements HasMedia
         return null;
     }
 
+    public function taskCategories(): BelongsToMany
+    {
+        return $this->belongsToMany(TaskCategory::class);
+    }
 
 }

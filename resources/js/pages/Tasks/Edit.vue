@@ -5,13 +5,14 @@ import { Switch } from '@/components/ui/switch';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import AppLayout from '@/layouts/AppLayout.vue';
-import { type BreadcrumbItem, type Task } from '@/types';
 import { Head, useForm, router } from '@inertiajs/vue3';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
 import { DateFormatter, fromDate, getLocalTimeZone } from '@internationalized/date';
 import { CalendarIcon } from 'lucide-vue-next';
+import { type BreadcrumbItem, type Task, type TaskCategory } from '@/types';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 
 
 const df = new DateFormatter('en-US', {
@@ -20,6 +21,7 @@ const df = new DateFormatter('en-US', {
 
 interface Props {
     task: Task;
+    categories: TaskCategory[];
 }
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -37,6 +39,7 @@ const form = useForm({
     is_completed: task.is_completed,
     due_date: task.due_date ? fromDate(new Date(task.due_date)) : null,
     media: '',
+    categories: task.task_categories.map(category => category.id)
 });
 const submitForm = () => {
     router.post(
@@ -114,6 +117,17 @@ const submitForm = () => {
                     <InputError :message="form.errors.media" />
 
                     <img v-if="task.mediaFile" :src="task.mediaFile.original_url" class="w-32 h-32 rounded-lg mx-auto mt-2" alt="image" />
+                </div>
+                <div class="grid gap-2">
+                    <Label htmlFor="categories">Categories</Label>
+
+                    <ToggleGroup type="multiple" variant="outline" size="lg" v-model="form.categories">
+                        <ToggleGroupItem v-for="category in categories" :key="category.id" :value="category.id">
+                            {{ category.name }}
+                        </ToggleGroupItem>
+                    </ToggleGroup>
+
+                    <InputError :message="form.errors.categories" />
                 </div>
 
                 <div class="flex items-center gap-4">

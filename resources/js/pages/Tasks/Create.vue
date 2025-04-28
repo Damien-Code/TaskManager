@@ -5,18 +5,28 @@ import InputError from '@/components/InputError.vue';
 import {Button} from '@/components/ui/button';
 import {Input} from '@/components/ui/input';
 import {Label} from '@/components/ui/label';
-import {type BreadcrumbItem} from '@/types';
+import {type BreadcrumbItem, type TaskCategory} from '@/types';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
 import { DateFormatter, getLocalTimeZone } from '@internationalized/date';
 import { CalendarIcon } from 'lucide-vue-next';
+import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 
 const form = useForm({
     name: '',
     due_date: null,
     media: null as File | string | null,
+    categories: []
 })
+
+interface Props {
+    categories: TaskCategory[];
+}
+
+const props = defineProps<Props>();
+
+const categories = props.categories;
 
 const fileSelected = (event: Event) => {
     const target = event.target as HTMLInputElement;
@@ -93,6 +103,18 @@ const submitForm = () => {
                     <progress v-if="form.progress" :value="form.progress.percentage" max="100">{form.progress.percentage}%</progress>
 
                     <InputError :message="form.errors.media" />
+                </div>
+
+                <div class="grid gap-2">
+                    <Label htmlFor="categories">Categories</Label>
+
+                    <ToggleGroup type="multiple" variant="outline" size="lg" v-model="form.categories">
+                        <ToggleGroupItem v-for="category in categories" :key="category.id" :value="category.id">
+                            {{ category.name }}
+                        </ToggleGroupItem>
+                    </ToggleGroup>
+
+                    <InputError :message="form.errors.categories" />
                 </div>
 
 
