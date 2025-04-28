@@ -2,11 +2,12 @@
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AppLayout from '@/layouts/AppLayout.vue';
-import { type BreadcrumbItem, type Task, type TaskCategory, type PaginatedResponse} from '@/types';
+import { type BreadcrumbItem, type PaginatedResponse, type Task, type TaskCategory } from '@/types';
 import { Head, Link, router } from '@inertiajs/vue3';
 import { toast } from 'vue-sonner';
 // import { Pagination } from '@/components/ui/pagination';
 import { DateFormatter } from '@internationalized/date';
+import Pagination from '@/components/Pagination.vue';
 
 interface Props {
     tasks: PaginatedResponse<Task>;
@@ -27,9 +28,7 @@ const props = defineProps<Props>();
 const selectedCategories = props.selectedCategories ? props.selectedCategories : [];
 
 const selectCategory = (id: string) => {
-    const selected = selectedCategories.includes(id)
-        ? selectedCategories.filter((category) => category !== id)
-        : [...selectedCategories, id];
+    const selected = selectedCategories.includes(id) ? selectedCategories.filter((category) => category !== id) : [...selectedCategories, id];
     router.visit('/tasks', { data: { categories: selected } });
 };
 
@@ -46,7 +45,12 @@ const deleteTask = (id: number) => {
         <Head title="Tasks List" />
 
         <div class="mt-4 flex flex-row justify-center gap-x-2">
-            <Button v-for="category in categories" :key="category.id" @click="selectCategory(category.id.toString())" :class="buttonVariants({ variant: (selectedCategories.includes(category.id.toString()) ? 'default' : 'secondary') })">
+            <Button
+                v-for="category in categories"
+                :key="category.id"
+                @click="selectCategory(category.id.toString())"
+                :class="buttonVariants({ variant: selectedCategories.includes(category.id.toString()) ? 'default' : 'secondary' })"
+            >
                 {{ category.name }} ({{ category.tasks_count }})
             </Button>
         </div>
@@ -93,6 +97,6 @@ const deleteTask = (id: number) => {
                 </TableRow>
             </TableBody>
         </Table>
-                <Pagination :resource="tasks" />
+        <Pagination :resource="tasks" />
     </AppLayout>
 </template>
