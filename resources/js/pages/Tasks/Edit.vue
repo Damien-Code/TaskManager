@@ -54,6 +54,7 @@ const submitForm = () => {
             preserveScroll: true,
         },
     );
+}
     const fileSelected = (event: Event) => {
         const target = event.target as HTMLInputElement;
         const file = target.files?.[0];
@@ -63,7 +64,7 @@ const submitForm = () => {
         }
         form.media = file;
     };
-}
+
 </script>
 
 <template>

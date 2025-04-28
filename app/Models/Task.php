@@ -40,7 +40,6 @@ class Task extends Model implements HasMedia
         if ($this->relationLoaded('media')) {
             return $this->getFirstMedia();
         }
-
         return null;
     }
 

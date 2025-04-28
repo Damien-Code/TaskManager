@@ -17,6 +17,7 @@ const form = useForm({
     name: '',
     due_date: null,
     media: null as File | string | null,
+    //media: '',
     categories: []
 })
 
