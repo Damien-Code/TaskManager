@@ -39,7 +39,7 @@ class TaskController extends Controller
     {
         return Inertia::render('Tasks/Create',
         [
-            'categories' => TaskCategory::all(),
+            'categories' => TaskCategory::where('user_id', auth()->id())->get(),
         ]);
     }
 
@@ -103,6 +103,7 @@ class TaskController extends Controller
      */
     public function destroy(Task $task)
     {
+        $task->taskCategories()->detach();
         $task->delete();
         return redirect()->route('tasks.index');
     }
