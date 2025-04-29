@@ -78,7 +78,7 @@ class TaskController extends Controller
         $task->append('mediaFile');
         return Inertia::render('Tasks/Edit', [
             'task' => $task,
-            'categories' => TaskCategory::all(),
+            'categories' => TaskCategory::with('tasks')->where('user_id', auth()->id())->get(),
         ]);
     }
 

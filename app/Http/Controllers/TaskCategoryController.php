@@ -13,7 +13,7 @@ class TaskCategoryController extends Controller
     public function index()
     {
         return Inertia::render('TaskCategories/Index', [
-            'taskCategories' => TaskCategory::with('tasks')->get(),
+            'taskCategories' => TaskCategory::with('tasks')->where('user_id', auth()->id())->get(),
         ]);
     }
 
