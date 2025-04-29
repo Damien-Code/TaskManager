@@ -24,7 +24,7 @@ class TaskCategoryController extends Controller
 
     public function store(StoreTaskCategoryRequest $request)
     {
-        TaskCategory::create($request->validated());
+        TaskCategory::create($request->validated() + ['user_id' => auth()->id()]);
 
         return redirect()->route('task-categories.index');
     }

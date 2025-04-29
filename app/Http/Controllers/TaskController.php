@@ -6,6 +6,7 @@ use App\Http\Requests\StoreTaskRequest;
 use App\Http\Requests\UpdateTaskRequest;
 use App\Models\Task;
 use App\Models\TaskCategory;
+use Illuminate\Container\Attributes\Auth;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -19,6 +20,7 @@ class TaskController extends Controller
         return Inertia::render('Tasks/Index', [
             'tasks' => Task::query()
                 ->with(['media', 'taskCategories'])
+                ->where('user_id', auth()->id())
                 ->when($request->has('categories'), function ($query) use ($request) {
                     $query->whereHas('taskCategories', function ($query) use ($request) {
                         $query->whereIn('id', $request->query('categories'));
@@ -49,7 +51,7 @@ class TaskController extends Controller
         //Task::create($request->validated() + ['is_completed' => false]);
 
         //$task = Task::create($request->validated() + ['is_completed' => false]);
-        $task = Task::create($request->safe(['name', 'due_date']) + ['is_completed' => false]);
+        $task = Task::create($request->safe(['name', 'due_date']) + ['is_completed' => false] + ['user_id' => auth()->id()]);
         if ($request->hasFile('media')){
             $task->addMedia($request->file('media'))->toMediaCollection();
         }
@@ -92,7 +94,7 @@ class TaskController extends Controller
             $task->addMedia($request->file('media'))->toMediaCollection();
         }
 
-        $task->taskCategories()->sync($request->validated('categories', []));
+        $task->taskCategories()->sync($request->validated('categories'));
         return redirect()->route('tasks.index');
     }
 

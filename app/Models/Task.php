@@ -16,6 +16,7 @@ class Task extends Model implements HasMedia
     use InteractsWithMedia;
 
     protected $fillable = [
+        'user_id',
         'name',
         'is_completed',
         'due_date'
@@ -46,6 +47,11 @@ class Task extends Model implements HasMedia
     public function taskCategories(): BelongsToMany
     {
         return $this->belongsToMany(TaskCategory::class);
+    }
+
+    public function users(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 
 }
