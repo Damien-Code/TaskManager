@@ -5,7 +5,6 @@ import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem, type PaginatedResponse, type Task, type TaskCategory } from '@/types';
 import { Head, Link, router } from '@inertiajs/vue3';
 import { toast } from 'vue-sonner';
-// import { Pagination } from '@/components/ui/pagination';
 import { DateFormatter } from '@internationalized/date';
 import Pagination from '@/components/Pagination.vue';
 
@@ -23,6 +22,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 const df = new DateFormatter('en-US', {
     dateStyle: 'long',
 });
+
 
 const props = defineProps<Props>();
 const selectedCategories = props.selectedCategories ? props.selectedCategories : [];
@@ -86,7 +86,7 @@ const deleteTask = (id: number) => {
                             {{ category.name }}
                         </span>
                     </TableCell>
-                    <TableCell :class="{ 'text-green-600': task.is_completed, 'text-red-700': !task.is_completed }">
+                    <TableCell :class="{ 'text-green-700': task.is_completed, 'text-blue-500': !task.is_completed }">
                         {{ task.is_completed ? 'Completed' : 'In Progress' }}
                     </TableCell>
                     <TableCell>{{ task.due_date ? df.format(new Date(task.due_date)) : '' }}</TableCell>
