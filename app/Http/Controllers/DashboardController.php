@@ -28,7 +28,7 @@ class DashboardController extends Controller
             'datasets' => [
                 [
                     'label' => 'Tasks',
-                    'backgroundColor' => ['#3490dc', '#f6993f'],
+                    'backgroundColor' => ['#000000', '#d3d3d3'],
                     'data' => [
                         Task::query()->where('is_completed', true)->where('user_id', auth()->id())->count(),
                         Task::query()->where('is_completed', false)->where('user_id', auth()->id())->count(),
@@ -45,7 +45,7 @@ class DashboardController extends Controller
             'datasets' => [
                 [
                     'label' => 'Tasks',
-                    'backgroundColor' => '#3490dc',
+                    'backgroundColor' => '#d3d3d3',
                     'data' => collect(range(0, 6))
                         ->map(function ($day) {
                             $date = now()->startOfWeek()->addDays($day);
