@@ -55,7 +55,7 @@ const deleteTask = (id: number) => {
             </Button>
         </div>
         <div class="mt-4">
-            <Link :class="buttonVariants({ variant: 'outline' })" href="/tasks/create"> Create Task</Link>
+            <Link :class="buttonVariants({ variant: 'outline' })" href="/tasks/create" class="mr-4"> Create Task</Link>
             <Link :class="buttonVariants({ variant: 'outline' })" href="/task-categories"> Manage Task Categories</Link>
         </div>
         <Table>

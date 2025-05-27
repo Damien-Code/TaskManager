@@ -126,7 +126,7 @@ const mainNavItems: NavItem[] = [
                                     <NavigationMenuLink
                                         :class="[navigationMenuTriggerStyle(), activeItemStyles(item.href), 'h-9 cursor-pointer px-3']"
                                     >
-                                        <component v-if="item.icon" :is="item.icon" class="mr-2 h-4 w-4" />
+<!--                                        <component v-if="item.icon" :is="item.icon" class="mr-2 h-4 w-4" />-->
                                         {{ item.title }}
                                     </NavigationMenuLink>
                                 </Link>
