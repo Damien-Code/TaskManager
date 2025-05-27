@@ -13,12 +13,11 @@ import {
     navigationMenuTriggerStyle,
 } from '@/components/ui/navigation-menu';
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import UserMenuContent from '@/components/UserMenuContent.vue';
 import { getInitials } from '@/composables/useInitials';
 import type { BreadcrumbItem, NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/vue3';
-import { BookOpen, BriefcaseIcon, Folder, LayoutGrid, Menu, Search } from 'lucide-vue-next';
+import { CircleCheck, LayoutDashboard, Menu, Search } from 'lucide-vue-next';
 import { computed } from 'vue';
 
 interface Props {
@@ -42,12 +41,12 @@ const mainNavItems: NavItem[] = [
     {
         title: 'Dashboard',
         href: '/dashboard',
-        icon: LayoutGrid,
+        icon: LayoutDashboard,
     },
     {
         title: 'Tasks',
         href: '/tasks',
-        icon: BriefcaseIcon,
+        icon: CircleCheck,
     }
 ];
 
