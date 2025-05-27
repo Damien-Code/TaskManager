@@ -27,7 +27,7 @@ class TaskController extends Controller
                     });
                 })->paginate(15)
                 ->withQueryString(),
-            'categories' => TaskCategory::whereHas('tasks')->withCount('tasks')->get(),
+            'categories' => TaskCategory::whereHas('tasks')->where('user_id', auth()->id())->withCount('tasks')->get(),
             'selectedCategories' => $request->query('categories'),
         ]);
     }

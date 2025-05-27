@@ -15,6 +15,7 @@ class DashboardController extends Controller
             'pendingTasksToday' => Task::query()
                 ->where('is_completed', false)
                 ->whereDate('due_date', now())
+                ->where('user_id', auth()->id())
                 ->count(),
             'tasksCreatedByDay' => $this->getTasksCreatedByDay(),
         ]);
@@ -29,8 +30,8 @@ class DashboardController extends Controller
                     'label' => 'Tasks',
                     'backgroundColor' => ['#3490dc', '#f6993f'],
                     'data' => [
-                        Task::query()->where('is_completed', true)->count(),
-                        Task::query()->where('is_completed', false)->count(),
+                        Task::query()->where('is_completed', true)->where('user_id', auth()->id())->count(),
+                        Task::query()->where('is_completed', false)->where('user_id', auth()->id())->count(),
                     ],
                 ],
             ],
@@ -49,7 +50,7 @@ class DashboardController extends Controller
                         ->map(function ($day) {
                             $date = now()->startOfWeek()->addDays($day);
 
-                            return Task::query()->whereDate('created_at', $date)->count();
+                            return Task::query()->whereDate('created_at', $date)->where('user_id', auth()->id())->count();
                         })
                         ->toArray(),
                 ],
