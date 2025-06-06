@@ -22,7 +22,7 @@ import { type BreadcrumbItem, type SharedData, Standup, Team, User } from '@/typ
 import { Head, useForm, router, usePage } from '@inertiajs/vue3';
 import { DateFormatter, type DateValue, getLocalTimeZone, CalendarDate } from '@internationalized/date';
 import { CalendarIcon, CirclePlus } from 'lucide-vue-next';
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { toast } from 'vue-sonner';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Bell, Check } from 'lucide-vue-next';
@@ -110,6 +110,16 @@ const applyFilter = () => {
         preserveState: true,
     })
 }
+
+// watch(selectedTeam, (newValue) => {
+//     router.get(route.path, {
+//         ...route.query,
+//         team: newValue || undefined, // undefined verwijdert ?team= als leeg
+//     }, {
+//         preserveScroll: true,
+//         preserveState: true,
+//     })
+// })
 </script>
 
 <template>
@@ -210,9 +220,9 @@ const applyFilter = () => {
                                 <SelectValue placeholder="Kies een team" />
                             </SelectTrigger>
                             <SelectContent>
-                                <SelectItem value="">All Teams</SelectItem>
+                                <SelectItem value="1">All Teams</SelectItem>
                                 <SelectItem
-                                    v-for="team in teams"
+                                    v-for="team in props.teams"
                                     :key="team.id"
                                     :value="team.id"
                                 >
