@@ -17,7 +17,7 @@ import UserMenuContent from '@/components/UserMenuContent.vue';
 import { getInitials } from '@/composables/useInitials';
 import type { BreadcrumbItem, NavItem } from '@/types';
 import { Link, usePage } from '@inertiajs/vue3';
-import { CircleCheck, LayoutDashboard, Menu, Search } from 'lucide-vue-next';
+import { CircleCheck, LayoutDashboard, Menu, Search, Users } from 'lucide-vue-next';
 import { computed } from 'vue';
 
 interface Props {
@@ -47,6 +47,11 @@ const mainNavItems: NavItem[] = [
         title: 'Tasks',
         href: '/tasks',
         icon: CircleCheck,
+    },
+    {
+        title: 'Daily Standup',
+        href: '/daily-standup',
+        icon: Users,
     }
 ];
 

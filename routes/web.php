@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\StandupController;
 use App\Http\Controllers\TaskCategoryController;
 use App\Http\Controllers\TaskController;
 use Illuminate\Support\Facades\Route;
@@ -19,6 +20,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::resource('tasks', TaskController::class);
     Route::resource('task-categories', TaskCategoryController::class);
+    Route::resource('daily-standup', StandupController::class);
 });
 
 require __DIR__.'/settings.php';
