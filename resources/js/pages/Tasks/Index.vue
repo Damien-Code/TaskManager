@@ -35,7 +35,7 @@ const selectCategory = (id: string) => {
 const deleteTask = (id: number) => {
     if (confirm('Are you sure you want to delete this task?')) {
         router.delete(route('tasks.destroy', { id }));
-        toast.success('Task deleted successfully');
+        toast.error('Task deleted successfully');
     }
 };
 </script>
