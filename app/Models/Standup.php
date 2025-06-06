@@ -17,4 +17,8 @@ class Standup extends Model
         'reflection',
         'date'
     ];
+
+    public function user(){
+        return $this->belongsTo(User::class);
+    }
 }

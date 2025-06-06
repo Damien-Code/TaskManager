@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Standup;
 use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 
 class StandupController extends Controller
@@ -33,7 +35,15 @@ class StandupController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'accomplishment' => 'required',
+            'doing' => 'required',
+            'reflection' => 'required',
+            'date' => 'required|date',
+        ]);
+        $validated['date'] = Carbon::parse($validated['date']);
+        auth()->user()->standups()->create($validated);
+        return redirect()->route('daily-standup.index');
     }
 
     /**
