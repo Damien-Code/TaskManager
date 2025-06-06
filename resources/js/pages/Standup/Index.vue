@@ -27,6 +27,15 @@ import { toast } from 'vue-sonner';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Bell, Check } from 'lucide-vue-next';
 import { Input } from '@/components/ui/input';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@/components/ui/select'
+
+
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -83,13 +92,24 @@ const submitStandup = () => {
 };
 
 const showDate = (date: Date) => {
-    console.log(date);
     if (date === undefined)
         date = null;
     router.visit(route('daily-standup.index', {
         date: date ? new Date(date).toLocaleDateString() : null
     }));
 };
+
+
+const selectedTeam = ref(route('daily-standup.index') || '') // Behoud huidige selectie bij pageload
+
+const applyFilter = () => {
+    router.get(route('daily-standup.index'), {
+        team: selectedTeam.value || undefined,
+    }, {
+        preserveScroll: true,
+        preserveState: true,
+    })
+}
 </script>
 
 <template>
@@ -184,8 +204,24 @@ const showDate = (date: Date) => {
                 <div
                     class="border-sidebar-border/70 dark:border-sidebar-border relative aspect-video overflow-hidden rounded-xl border p-4"
                 >
-                    <div v-for="team in teams" :key="team.id">
-                        <HeadingSmall :title="team.name" />
+                    <div class="flex items-center gap-4 mb-6">
+                        <Select v-model="selectedTeam">
+                            <SelectTrigger class="w-[200px]">
+                                <SelectValue placeholder="Kies een team" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="">All Teams</SelectItem>
+                                <SelectItem
+                                    v-for="team in teams"
+                                    :key="team.id"
+                                    :value="team.id"
+                                >
+                                    {{ team.name }}
+                                </SelectItem>
+                            </SelectContent>
+                        </Select>
+
+                        <Button @click="applyFilter">Filter</Button>
                     </div>
                 </div>
                 <div
