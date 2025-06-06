@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Standup;
 use App\Models\User;
+use App\Models\Team;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -16,8 +17,8 @@ class StandupController extends Controller
      */
     public function index(Request $request)
     {
-//        if ($request->has('date'))
-//            dd($request->query('date'), Carbon::parse($request->query('date')));
+//        dd(User::find(1)->teams);
+//        dd(Team::find(1)->users);
         return Inertia::render('Standup/Index', [
             'standups' => Standup::query()
                 ->with('user')

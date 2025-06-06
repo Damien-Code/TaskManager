@@ -21,11 +21,12 @@ import { cn } from '@/lib/utils';
 import { type BreadcrumbItem, type SharedData, Standup, User } from '@/types';
 import { Head, useForm, router, usePage } from '@inertiajs/vue3';
 import { DateFormatter, type DateValue, getLocalTimeZone, CalendarDate } from '@internationalized/date';
-import { CalendarIcon } from 'lucide-vue-next';
+import { CalendarIcon, CirclePlus } from 'lucide-vue-next';
 import { computed, ref } from 'vue';
 import { toast } from 'vue-sonner';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Bell, Check } from 'lucide-vue-next';
+import { Input } from '@/components/ui/input';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -154,15 +155,70 @@ const showDate = (date: Date) => {
                             </form>
                         </DialogContent>
                     </Dialog>
+                    <Dialog>
+                        <DialogTrigger as-child>
+                            <Button variant="outline"> Create new Team</Button>
+                        </DialogTrigger>
+                        <DialogContent class="sm:max-w-[600px]">
+                            <form @submit.prevent="submitStandup">
+                                <DialogHeader>
+                                    <DialogTitle>Create a new Team</DialogTitle>
+                                    <DialogDescription> Prepare a new standup and show the team on what you are working
+                                        on!
+                                    </DialogDescription>
+                                </DialogHeader>
+                                <div class="grid gap-4 py-4">
+                                    <div class="grid grid-cols-4 items-center gap-4">
+                                        <Label for="accomplishment" class="text-right"> What will the team be called?</Label>
+                                        <Input class="col-span-3" placeholder="Name"/>
+                                    </div>
+                                </div>
+                                <DialogFooter>
+                                    <Button type="submit"> Save changes</Button>
+                                </DialogFooter>
+                            </form>
+                        </DialogContent>
+                    </Dialog>
                 </div>
                 <div
                     class="border-sidebar-border/70 dark:border-sidebar-border relative aspect-video overflow-hidden rounded-xl border p-4"
                 >
-                    <Button>Create new Team</Button>
+
                 </div>
                 <div
                     class="border-sidebar-border/70 dark:border-sidebar-border relative aspect-video overflow-hidden rounded-xl border p-4">
+                    <div class="flex justify-between">
                     <Heading title="Team Members" description="Invite your team members to collaborate" />
+
+                        <Dialog>
+                            <DialogTrigger as-child>
+                                <Button variant="outline">
+                                    <CirclePlus/>
+                                </Button>
+                            </DialogTrigger>
+                            <DialogContent class="sm:max-w-[425px]">
+                                <DialogHeader>
+                                    <DialogTitle>Add new team members</DialogTitle>
+                                    <DialogDescription>
+                                        Make changes to your profile here. Click save when you're done.
+                                    </DialogDescription>
+                                </DialogHeader>
+                                <div class="grid gap-4 py-4">
+                                    <div class="grid grid-cols-4 items-center gap-4">
+                                        <Label for="name" class="text-right">
+                                            Name
+                                        </Label>
+                                        <Input id="name" value="Pedro Duarte" class="col-span-3" />
+                                    </div>
+                                </div>
+                                <DialogFooter>
+                                    <Button type="submit">
+                                        Save changes
+                                    </Button>
+                                </DialogFooter>
+                            </DialogContent>
+                        </Dialog>
+                    </div>
                     <div class="overflow-scroll h-full">
                         <div v-for="user in users" :key="user.id" class="flex flex-row gap-6 py-2">
                             <Avatar class="h-8 w-8 overflow-hidden rounded-lg">
