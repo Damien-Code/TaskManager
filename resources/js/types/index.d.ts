@@ -18,6 +18,16 @@ export interface NavItem {
     isActive?: boolean;
 }
 
+export interface Standup {
+    user: User,
+    accomplishment: string,
+    doing: string,
+    reflection: string,
+    date: Date
+    created_at: string,
+    updated_at: string
+}
+
 export interface Task{
     id: number;
     name: string;

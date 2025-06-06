@@ -14,10 +14,17 @@ class StandupController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+//        if ($request->has('date'))
+//            dd($request->query('date'), Carbon::parse($request->query('date')));
         return Inertia::render('Standup/Index', [
-            'standup' => Standup::all(),
+            'standups' => Standup::query()
+                ->with('user')
+                ->when($request->has('date'), function ($query) use ($request) {
+                    $query->whereDate('date', Carbon::parse($request->query('date')));
+                })->orderBy('date')->get(),
+            'date' => Carbon::parse($request->query('date'))->format('Y-m-d'),
             'users' => User::all()
         ]);
     }

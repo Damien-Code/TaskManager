@@ -4,39 +4,54 @@ import HeadingSmall from '@/components/HeadingSmall.vue';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger
+} from '@/components/ui/dialog';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Textarea } from '@/components/ui/textarea';
 import { getInitials } from '@/composables/useInitials';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { cn } from '@/lib/utils';
-import { type BreadcrumbItem, User } from '@/types';
-import { Head, useForm } from '@inertiajs/vue3';
-import { DateFormatter, type DateValue, getLocalTimeZone } from '@internationalized/date';
+import { type BreadcrumbItem, Standup, User } from '@/types';
+import { Head, useForm, router } from '@inertiajs/vue3';
+import { DateFormatter, type DateValue, getLocalTimeZone, CalendarDate } from '@internationalized/date';
 import { CalendarIcon } from 'lucide-vue-next';
 import { computed, ref } from 'vue';
 import { toast } from 'vue-sonner';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Bell, Check } from 'lucide-vue-next';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
         title: 'Daily Standup',
-        href: '/daily-standup',
-    },
+        href: '/daily-standup'
+    }
 ];
 
 interface Props {
     users: User[];
+    standups: Standup[],
+    date?: string,
 }
 
-defineProps<Props>();
+const props = defineProps<Props>();
+
+const dateDate = new Date(props.date);
+const test = new CalendarDate(dateDate.getFullYear(), dateDate.getMonth() + 1, dateDate.getDate());
 // const showAvatar = computed(() => props.users.avatar && props.users.avatar !== '');
 
 const getAvatar = (user: User) => {
     return computed(() => user.avatar && user.avatar !== '');
 };
 
-const df = new DateFormatter('en-US', {
-    dateStyle: 'long',
+const df = new DateFormatter('nl-NL', {
+    dateStyle: 'long'
 });
 
 const value = ref<DateValue>();
@@ -45,21 +60,34 @@ const form = useForm({
     accomplishment: '',
     doing: '',
     reflection: '',
-    date: null,
+    date: null
 });
 
 const submitStandup = () => {
     form.transform((data) => ({
         ...data,
-        date: data.date ? data.date.toDate(getLocalTimeZone()) : null,
+        date: data.date ? new Date(data.date).toLocaleDateString() : null
     })).post(route('daily-standup.store'), {
         forceFormData: true,
         preserveScroll: true,
         onSuccess: () => {
             form.reset();
             toast.success('Daily standup is successfully added!');
-        },
+        }
     });
+};
+
+const showDate = (date: Date) => {
+    console.log(date);
+    if (date === undefined)
+        date = null;
+    // const d = new Date(date)
+    // console.log(d.toLocaleDateString())
+    // date = date ? date.toDate(getLocalTimeZone()) : null
+    // console.log("Date", date)
+    router.visit(route('daily-standup.index', {
+        date: date ? new Date(date).toLocaleDateString() : null
+    }));
 };
 </script>
 
@@ -69,7 +97,8 @@ const submitStandup = () => {
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
             <div class="grid auto-rows-min gap-4 md:grid-cols-3">
-                <div class="border-sidebar-border/70 dark:border-sidebar-border relative aspect-video overflow-hidden rounded-xl border p-4">
+                <div
+                    class="border-sidebar-border/70 dark:border-sidebar-border relative aspect-video overflow-hidden rounded-xl border p-4">
                     <Dialog>
                         <DialogTrigger as-child>
                             <Button variant="outline"> Create new standup</Button>
@@ -78,7 +107,9 @@ const submitStandup = () => {
                             <form @submit.prevent="submitStandup">
                                 <DialogHeader>
                                     <DialogTitle>Create a new standup</DialogTitle>
-                                    <DialogDescription> Prepare a new standup and show the team on what you are working on! </DialogDescription>
+                                    <DialogDescription> Prepare a new standup and show the team on what you are working
+                                        on!
+                                    </DialogDescription>
                                 </DialogHeader>
                                 <div class="grid gap-4 py-4">
                                     <div class="grid grid-cols-4 items-center gap-4">
@@ -90,7 +121,8 @@ const submitStandup = () => {
                                                     :class="cn('w-[280px] justify-start text-left font-normal', !value && 'text-muted-foreground')"
                                                 >
                                                     <CalendarIcon class="mr-2 h-4 w-4" />
-                                                    {{ form.date ? df.format(form.date.toDate(getLocalTimeZone())) : 'Pick a date' }}
+                                                    {{ form.date ? df.format(form.date.toDate(getLocalTimeZone())) : 'Pick a date'
+                                                    }}
                                                 </Button>
                                             </PopoverTrigger>
                                             <PopoverContent class="w-auto p-0">
@@ -99,16 +131,22 @@ const submitStandup = () => {
                                         </Popover>
                                     </div>
                                     <div class="grid grid-cols-4 items-center gap-4">
-                                        <Label for="accomplishment" class="text-right"> What did you accomplish? </Label>
-                                        <Textarea v-model="form.accomplishment" placeholder="Type your accomplishments here." class="col-span-3" />
+                                        <Label for="accomplishment" class="text-right"> What did you
+                                            accomplish? </Label>
+                                        <Textarea v-model="form.accomplishment"
+                                                  placeholder="Type your accomplishments here." class="col-span-3" />
                                     </div>
                                     <div class="grid grid-cols-4 items-center gap-4">
                                         <Label for="doing" class="text-right"> What are you going to do? </Label>
-                                        <Textarea v-model="form.doing" placeholder="Type the things you are going to do here." class="col-span-3" />
+                                        <Textarea v-model="form.doing"
+                                                  placeholder="Type the things you are going to do here."
+                                                  class="col-span-3" />
                                     </div>
                                     <div class="grid grid-cols-4 items-center gap-4">
-                                        <Label for="reflection" class="text-right"> What could have gone better? </Label>
-                                        <Textarea v-model="form.reflection" placeholder="Type your reflection here." class="col-span-3" />
+                                        <Label for="reflection" class="text-right"> What could have gone
+                                            better? </Label>
+                                        <Textarea v-model="form.reflection" placeholder="Type your reflection here."
+                                                  class="col-span-3" />
                                     </div>
                                 </div>
                                 <DialogFooter>
@@ -120,8 +158,10 @@ const submitStandup = () => {
                 </div>
                 <div
                     class="border-sidebar-border/70 dark:border-sidebar-border relative flex aspect-video flex-col items-center justify-start overflow-hidden rounded-xl border py-4"
-                ></div>
-                <div class="border-sidebar-border/70 dark:border-sidebar-border relative aspect-video overflow-hidden rounded-xl border p-4">
+                >
+                </div>
+                <div
+                    class="border-sidebar-border/70 dark:border-sidebar-border relative aspect-video overflow-hidden rounded-xl border p-4">
                     <Heading title="Team Members" description="Invite your team members to collaborate" />
                     <div class="overflow-scroll h-full">
                         <div v-for="user in users" :key="user.id" class="flex flex-row gap-6 py-2">
@@ -136,8 +176,56 @@ const submitStandup = () => {
                     </div>
                 </div>
             </div>
-            <div class="border-sidebar-border/70 dark:border-sidebar-border relative min-h-[100vh] flex-1 rounded-xl border md:min-h-min">
-
+            <div class="grid auto-rows-min gap-4 md:grid-cols-3">
+                <div class="col-span-2">
+                    <template v-for="standup in standups" :key="standup.accomplishment">
+                        <Card :class="cn('col-span-3 mx-auto', $attrs.class ?? '')">
+                            <CardHeader>
+                                <CardTitle>{{ standup.user.name }}</CardTitle>
+                                <CardDescription>{{ standup.date ? df.format(new Date(standup.date)) : '' }}
+                                </CardDescription>
+                            </CardHeader>
+                            <CardContent class="grid gap-4">
+                                <div class=" flex items-center space-x-4 rounded-md border p-4">
+                                    <div class="flex-1 space-y-1">
+                                        <Heading title="What did you accomplish today?" />
+                                        <p class="text-sm font-medium leading-none">
+                                            {{ standup.accomplishment }}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class=" flex items-center space-x-4 rounded-md border p-4">
+                                    <div class="flex-1 space-y-1">
+                                        <Heading title="What are you going to focus on?" />
+                                        <p class="text-sm font-medium leading-none">
+                                            {{ standup.doing }}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class=" flex items-center space-x-4 rounded-md border p-4">
+                                    <div class="flex-1 space-y-1">
+                                        <Heading title="What could have gone better?" />
+                                        <p class="text-sm font-medium leading-none">
+                                            {{ standup.reflection }}
+                                        </p>
+                                    </div>
+                                </div>
+                            </CardContent>
+                            <CardFooter>
+                                <Button class="w-full">
+                                    <Check />
+                                </Button>
+                            </CardFooter>
+                        </Card>
+                    </template>
+                    <div v-if="standups.length === 0">
+                        <Heading title="No standups found for this date" />
+                    </div>
+                </div>
+                <div class="border-sidebar-border/70 dark:border-sidebar-border rounded-xl border p-4">
+                    <Calendar @update:model-value="showDate" :model-value="test" :weekday-format="'short'"
+                              class="rounded-md w-fit" />
+                </div>
             </div>
         </div>
     </AppLayout>
