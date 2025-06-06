@@ -17,9 +17,8 @@ class StandupController extends Controller
      */
     public function index(Request $request)
     {
-//        dd(User::find(1)->teams);
-//        dd(Team::find(1)->users);
         return Inertia::render('Standup/Index', [
+            'teams' => $request->user()->teams,
             'standups' => Standup::query()
                 ->with('user')
                 ->when($request->has('date'), function ($query) use ($request) {
@@ -57,7 +56,7 @@ class StandupController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Standup $standup)
+    public function show(Standup $standup, Team $team)
     {
         //
     }

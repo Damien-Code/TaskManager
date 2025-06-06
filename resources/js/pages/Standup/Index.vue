@@ -18,7 +18,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { getInitials } from '@/composables/useInitials';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { cn } from '@/lib/utils';
-import { type BreadcrumbItem, type SharedData, Standup, User } from '@/types';
+import { type BreadcrumbItem, type SharedData, Standup, Team, User } from '@/types';
 import { Head, useForm, router, usePage } from '@inertiajs/vue3';
 import { DateFormatter, type DateValue, getLocalTimeZone, CalendarDate } from '@internationalized/date';
 import { CalendarIcon, CirclePlus } from 'lucide-vue-next';
@@ -41,6 +41,7 @@ const user = page.props.auth.user as User;
 interface Props {
     users: User[];
     standups: Standup[],
+    teams: Team[]
     date?: string,
 }
 
@@ -183,7 +184,9 @@ const showDate = (date: Date) => {
                 <div
                     class="border-sidebar-border/70 dark:border-sidebar-border relative aspect-video overflow-hidden rounded-xl border p-4"
                 >
-
+                    <div v-for="team in teams" :key="team.id">
+                        <HeadingSmall :title="team.name" />
+                    </div>
                 </div>
                 <div
                     class="border-sidebar-border/70 dark:border-sidebar-border relative aspect-video overflow-hidden rounded-xl border p-4">
