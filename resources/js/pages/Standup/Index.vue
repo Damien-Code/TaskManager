@@ -18,8 +18,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { getInitials } from '@/composables/useInitials';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { cn } from '@/lib/utils';
-import { type BreadcrumbItem, Standup, User } from '@/types';
-import { Head, useForm, router } from '@inertiajs/vue3';
+import { type BreadcrumbItem, type SharedData, Standup, User } from '@/types';
+import { Head, useForm, router, usePage } from '@inertiajs/vue3';
 import { DateFormatter, type DateValue, getLocalTimeZone, CalendarDate } from '@internationalized/date';
 import { CalendarIcon } from 'lucide-vue-next';
 import { computed, ref } from 'vue';
@@ -33,6 +33,9 @@ const breadcrumbs: BreadcrumbItem[] = [
         href: '/daily-standup'
     }
 ];
+
+const page = usePage<SharedData>();
+const user = page.props.auth.user as User;
 
 interface Props {
     users: User[];
@@ -81,10 +84,6 @@ const showDate = (date: Date) => {
     console.log(date);
     if (date === undefined)
         date = null;
-    // const d = new Date(date)
-    // console.log(d.toLocaleDateString())
-    // date = date ? date.toDate(getLocalTimeZone()) : null
-    // console.log("Date", date)
     router.visit(route('daily-standup.index', {
         date: date ? new Date(date).toLocaleDateString() : null
     }));
@@ -157,8 +156,9 @@ const showDate = (date: Date) => {
                     </Dialog>
                 </div>
                 <div
-                    class="border-sidebar-border/70 dark:border-sidebar-border relative flex aspect-video flex-col items-center justify-start overflow-hidden rounded-xl border py-4"
+                    class="border-sidebar-border/70 dark:border-sidebar-border relative aspect-video overflow-hidden rounded-xl border p-4"
                 >
+                    <Button>Create new Team</Button>
                 </div>
                 <div
                     class="border-sidebar-border/70 dark:border-sidebar-border relative aspect-video overflow-hidden rounded-xl border p-4">
@@ -177,13 +177,16 @@ const showDate = (date: Date) => {
                 </div>
             </div>
             <div class="grid auto-rows-min gap-4 md:grid-cols-3">
-                <div class="col-span-2">
+                <div class="col-span-2 p-4 border-sidebar-border/70 dark:border-sidebar-border rounded-xl border">
                     <template v-for="standup in standups" :key="standup.accomplishment">
-                        <Card :class="cn('col-span-3 mx-auto', $attrs.class ?? '')">
-                            <CardHeader>
+                        <Card :class="cn('col-span-3 mx-auto mb-4', $attrs.class ?? '')">
+                            <CardHeader class="flex justify-between">
+                                <div>
                                 <CardTitle>{{ standup.user.name }}</CardTitle>
                                 <CardDescription>{{ standup.date ? df.format(new Date(standup.date)) : '' }}
                                 </CardDescription>
+                                </div>
+                                <Button v-if="standup.user_id === user.id">Edit</Button>
                             </CardHeader>
                             <CardContent class="grid gap-4">
                                 <div class=" flex items-center space-x-4 rounded-md border p-4">

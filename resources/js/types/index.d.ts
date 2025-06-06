@@ -20,6 +20,8 @@ export interface NavItem {
 
 export interface Standup {
     user: User,
+    user_id: number;
+    id: number,
     accomplishment: string,
     doing: string,
     reflection: string,
