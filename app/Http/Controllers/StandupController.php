@@ -60,6 +60,7 @@ class StandupController extends Controller
             'doing' => 'required',
             'reflection' => 'required',
             'date' => 'required|date',
+            'team_id' => 'required|exists:teams,id'
         ]);
         $validated['date'] = Carbon::parse($validated['date']);
         auth()->user()->standups()->create($validated);

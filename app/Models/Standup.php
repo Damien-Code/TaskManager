@@ -15,7 +15,9 @@ class Standup extends Model
         'accomplishment',
         'doing',
         'reflection',
-        'date'
+        'date',
+        'user_id',
+        'team_id',
     ];
 
     public function user(){

@@ -22,7 +22,7 @@ import { type BreadcrumbItem, type SharedData, Standup, Team, User } from '@/typ
 import { Head, useForm, router, usePage } from '@inertiajs/vue3';
 import { DateFormatter, type DateValue, getLocalTimeZone, CalendarDate } from '@internationalized/date';
 import { CalendarIcon, CirclePlus } from 'lucide-vue-next';
-import { computed, ref, watch } from 'vue';
+import { computed, ref, watch,  } from 'vue';
 import { toast } from 'vue-sonner';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Bell, Check } from 'lucide-vue-next';
@@ -34,7 +34,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@/components/ui/select'
-
+// import { useRoute } from 'vue-router'
 
 
 const breadcrumbs: BreadcrumbItem[] = [
@@ -45,6 +45,9 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 const page = usePage<SharedData>();
+// const route = useRoute();
+const teamId = new URLSearchParams(window.location.search).get('team')
+
 const user = page.props.auth.user as User;
 
 interface Props {
@@ -74,10 +77,12 @@ const form = useForm({
     accomplishment: '',
     doing: '',
     reflection: '',
-    date: null
+    date: null,
+    team_id: teamId || ''
 });
 
 const submitStandup = () => {
+    console.log(teamId)
     form.transform((data) => ({
         ...data,
         date: data.date ? new Date(data.date).toLocaleDateString() : null
@@ -179,6 +184,7 @@ const applyFilter = () => {
                                         <Textarea v-model="form.reflection" placeholder="Type your reflection here."
                                                   class="col-span-3" />
                                     </div>
+<!--                                    <input type="hidden" v-model="form.team_id" />-->
                                 </div>
                                 <DialogFooter>
                                     <Button type="submit"> Save changes</Button>
