@@ -15,29 +15,54 @@ class StandupController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
-    {
-        return Inertia::render('Standup/Index', [
-            'teams' => $request->user()->teams,
+//    public function index(Request $request)
+//    {
+//        return Inertia::render('Standup/Index', [
+//            'teams' => $request->user()->teams,
+////            'standups' => Standup::query()
+////                ->with('user')
+////                ->when($request->has('date'), function ($query) use ($request) {
+////                    $query->whereDate('date', Carbon::parse($request->query('date')));
+////                })->orderBy('date')->get(),
+////            'date' => Carbon::parse($request->query('date'))->format('Y-m-d'),
 //            'standups' => Standup::query()
 //                ->with('user')
 //                ->when($request->has('date'), function ($query) use ($request) {
 //                    $query->whereDate('date', Carbon::parse($request->query('date')));
-//                })->orderBy('date')->get(),
-//            'date' => Carbon::parse($request->query('date'))->format('Y-m-d'),
+//                })
+//                ->when($request->has('team'), function ($query) use ($request) {
+//                    $query->where('team_id', $request->query('team'));
+//                })
+//                ->orderBy('date')
+//                ->get(),
+//            'date' => $request->has('date')
+//                ? Carbon::parse($request->query('date'))->format('Y-m-d')
+//                : now()->format('Y-m-d'),
+//            'users' => User::all()
+//        ]);
+//    }
+
+    public function index(Request $request)
+    {
+        $selectedTeam = $request->query('team');
+        $selectedDate = $request->query('date');
+
+        return Inertia::render('Standup/Index', [
+            'teams' => $request->user()->teams,
             'standups' => Standup::query()
                 ->with('user')
-                ->when($request->has('date'), function ($query) use ($request) {
-                    $query->whereDate('date', Carbon::parse($request->query('date')));
-                })
-                ->when($request->has('team'), function ($query) use ($request) {
-                    $query->where('team_id', $request->query('team'));
-                })
+                ->when($selectedTeam, fn($query) =>
+                $query->where('team_id', $selectedTeam)
+                )
+                ->when($selectedDate, fn($query) =>
+                $query->whereDate('date', Carbon::parse($selectedDate))
+                )
                 ->orderBy('date')
                 ->get(),
             'date' => $request->has('date')
                 ? Carbon::parse($request->query('date'))->format('Y-m-d')
                 : now()->format('Y-m-d'),
+            'selectedTeam' => $selectedTeam,
             'users' => User::all()
         ]);
     }

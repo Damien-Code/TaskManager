@@ -47,8 +47,12 @@ const breadcrumbs: BreadcrumbItem[] = [
 const page = usePage<SharedData>();
 // const route = useRoute();
 const teamId = new URLSearchParams(window.location.search).get('team')
-
 const user = page.props.auth.user as User;
+// const selectedTeam = ref(route('daily-standup.index') || '') // Behoud huidige selectie bij pageload
+const queryParams = new URLSearchParams(window.location.search);
+const selectedTeam = ref(queryParams.get('team') || '');
+// const showAvatar = computed(() => props.users.avatar && props.users.avatar !== '');
+const value = ref<DateValue>();
 
 interface Props {
     users: User[];
@@ -59,10 +63,6 @@ interface Props {
 
 const props = defineProps<Props>();
 
-const dateDate = new Date(props.date);
-const test = new CalendarDate(dateDate.getFullYear(), dateDate.getMonth() + 1, dateDate.getDate());
-// const showAvatar = computed(() => props.users.avatar && props.users.avatar !== '');
-
 const getAvatar = (user: User) => {
     return computed(() => user.avatar && user.avatar !== '');
 };
@@ -71,7 +71,6 @@ const df = new DateFormatter('nl-NL', {
     dateStyle: 'long'
 });
 
-const value = ref<DateValue>();
 
 const form = useForm({
     accomplishment: '',
@@ -82,7 +81,6 @@ const form = useForm({
 });
 
 const submitStandup = () => {
-    console.log(teamId)
     form.transform((data) => ({
         ...data,
         date: data.date ? new Date(data.date).toLocaleDateString() : null
@@ -96,6 +94,8 @@ const submitStandup = () => {
     });
 };
 
+const dateDate = new Date(props.date);
+
 const showDate = (date: Date) => {
     if (date === undefined)
         date = null;
@@ -103,10 +103,6 @@ const showDate = (date: Date) => {
         date: date ? new Date(date).toLocaleDateString() : null
     }));
 };
-
-
-const selectedTeam = ref(route('daily-standup.index') || '') // Behoud huidige selectie bij pageload
-
 const applyFilter = () => {
     router.get(route('daily-standup.index'), {
         team: selectedTeam.value || undefined,
@@ -116,15 +112,10 @@ const applyFilter = () => {
     })
 }
 
-// watch(selectedTeam, (newValue) => {
-//     router.get(route.path, {
-//         ...route.query,
-//         team: newValue || undefined, // undefined verwijdert ?team= als leeg
-//     }, {
-//         preserveScroll: true,
-//         preserveState: true,
-//     })
-// })
+watch(selectedTeam, (newVal) => {
+    form.team_id = newVal || '';
+});
+
 </script>
 
 <template>
