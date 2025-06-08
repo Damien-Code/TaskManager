@@ -17,7 +17,7 @@ import { type BreadcrumbItem, type SharedData, Standup, Team, User } from '@/typ
 import { Head, router, useForm, usePage } from '@inertiajs/vue3';
 import { CalendarDate, DateFormatter, type DateValue, getLocalTimeZone } from '@internationalized/date';
 import { CalendarIcon, Check, CirclePlus } from 'lucide-vue-next';
-import { computed, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { toast } from 'vue-sonner';
 // import { useRoute } from 'vue-router'
 
@@ -86,6 +86,9 @@ const submitStandup = () => {
             router.get(route('daily-standup.index'), {
                 team,
                 date,
+            }, {
+                preserveScroll: true,
+                preserveState: true
             });
         },
     });
