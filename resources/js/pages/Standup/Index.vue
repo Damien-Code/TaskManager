@@ -70,13 +70,23 @@ const form = useForm({
 const submitStandup = () => {
     form.transform((data) => ({
         ...data,
+        team: form.team_id,
         date: data.date ? new Date(data.date).toLocaleDateString() : null,
     })).post(route('daily-standup.store'), {
         forceFormData: true,
         preserveScroll: true,
         onSuccess: () => {
+            const team = form.team_id;
+            const date = form.date
+                ? new Date(form.date).toLocaleDateString('nl-NL')
+                : undefined;
             form.reset();
             toast.success('Daily standup is successfully added!');
+            // Navigeer opnieuw met de juiste team + datum in URL
+            router.get(route('daily-standup.index'), {
+                team,
+                date,
+            });
         },
     });
 };
@@ -92,22 +102,15 @@ const showDate = (date: Date) => {
         }),
     );
 };
-const applyFilter = () => {
-    router.get(
-        route('daily-standup.index'),
-        {
-            team: selectedTeam.value ?? undefined,
-            date: dateDate ? new Date(dateDate).toLocaleDateString() : null
-        },
-        {
-            preserveScroll: true,
-            preserveState: true,
-        },
-    );
-};
 
-watch(selectedTeam, (newVal) => {
-    form.team_id = newVal || '';
+watch(selectedTeam, (newValue) => {
+    router.get(route('daily-standup.index'), {
+        team: newValue || undefined,
+        date: dateDate ? new Date(dateDate).toLocaleDateString() : null
+    }, {
+        preserveScroll: true,
+        preserveState: true,
+    });
 });
 </script>
 
@@ -115,10 +118,10 @@ watch(selectedTeam, (newVal) => {
     <Head title="Dashboard" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="border-sidebar-border/70 dark:border-sidebar-border flex justify-between rounded-xl border p-4 mt-4">
-            <div class="flex items-center gap-4">
+        <div class="border-sidebar-border/70 dark:border-sidebar-border flex justify-between rounded-xl border p-4 mt-4 flex-col md:flex-row items-center">
+            <div class="flex items-center gap-4 mb-4 md:mb-0">
                 <Select v-model="selectedTeam">
-                    <SelectTrigger class="w-[200px]">
+                    <SelectTrigger class="w-[300px]">
                         <SelectValue placeholder="Pick your team"/>
                     </SelectTrigger>
                     <SelectContent>
@@ -127,13 +130,12 @@ watch(selectedTeam, (newVal) => {
                         </SelectItem>
                     </SelectContent>
                 </Select>
-                <Button @click="applyFilter">Select</Button>
             </div>
             <div class="w-2/5">
                 <Heading title="Your team" :description="selectedTeam"/>
             </div>
         </div>
-        <div v-if="!form.team_id" class="border-sidebar-border/70 dark:border-sidebar-border flex justify-between rounded-xl border p-4 mt-4">
+        <div v-if="!selectedTeam" class="border-sidebar-border/70 dark:border-sidebar-border flex justify-between rounded-xl border p-4 mt-4">
             <Heading title="Please select a team" description="After you picked a team, you are ready to submit your standups!"/>
         </div>
         <div v-else class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
