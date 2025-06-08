@@ -63,7 +63,11 @@ class StandupController extends Controller
                 ? Carbon::parse($request->query('date'))->format('Y-m-d')
                 : now()->format('Y-m-d'),
             'selectedTeam' => $selectedTeam,
-            'users' => User::all()
+            'users' => User::whereHas('teams', function ($query) use ($selectedTeam) {
+                $query->where('team_id', $selectedTeam);
+            })
+            ->with('teams')
+            ->get()
         ]);
     }
 

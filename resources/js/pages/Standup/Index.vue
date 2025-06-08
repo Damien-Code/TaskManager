@@ -42,10 +42,13 @@ interface Props {
     users: User[];
     standups: Standup[];
     teams: Team[];
+    selectedTeam: string;
     date?: string;
 }
 
 const props = defineProps<Props>();
+
+console.log(props.teams)
 
 const getAvatar = (user: User) => {
     return computed(() => user.avatar && user.avatar !== '');
@@ -79,11 +82,12 @@ const submitStandup = () => {
 };
 
 const dateDate = new Date(props.date);
-const test = new CalendarDate(dateDate.getFullYear(), dateDate.getMonth() + 1, dateDate.getDate());
+const dateValue = new CalendarDate(dateDate.getFullYear(), dateDate.getMonth() + 1, dateDate.getDate());
 const showDate = (date: Date) => {
     if (date === undefined) date = null;
     router.visit(
         route('daily-standup.index', {
+            team: props.selectedTeam ?? null,
             date: date ? new Date(date).toLocaleDateString() : null,
         }),
     );
@@ -92,7 +96,8 @@ const applyFilter = () => {
     router.get(
         route('daily-standup.index'),
         {
-            team: selectedTeam.value || undefined,
+            team: selectedTeam.value ?? undefined,
+            date: dateDate ? new Date(dateDate).toLocaleDateString() : null
         },
         {
             preserveScroll: true,
@@ -128,10 +133,10 @@ watch(selectedTeam, (newVal) => {
                 <Heading title="Your team" :description="selectedTeam"/>
             </div>
         </div>
-<!--        <div v-if="!form.team_id" class="border-sidebar-border/70 dark:border-sidebar-border flex justify-between rounded-xl border p-4 mt-4">-->
-<!--            <Heading title="Please select a team" description="After you picked a team, you are ready to submit your standups!"/>-->
-<!--        </div>-->
-        <div  class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
+        <div v-if="!form.team_id" class="border-sidebar-border/70 dark:border-sidebar-border flex justify-between rounded-xl border p-4 mt-4">
+            <Heading title="Please select a team" description="After you picked a team, you are ready to submit your standups!"/>
+        </div>
+        <div v-else class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
             <div class="grid auto-rows-min gap-4 md:grid-cols-3">
                 <div class="border-sidebar-border/70 dark:border-sidebar-border relative aspect-video overflow-hidden rounded-xl border p-4">
                     <Dialog>
@@ -295,7 +300,7 @@ watch(selectedTeam, (newVal) => {
                     </div>
                 </div>
                 <div class="border-sidebar-border/70 dark:border-sidebar-border rounded-xl border p-4">
-                    <Calendar @update:model-value="showDate" :model-value="test" :weekday-format="'short'" class="w-fit rounded-md" />
+                    <Calendar @update:model-value="showDate" :model-value="dateValue" :weekday-format="'short'" class="w-fit rounded-md" />
                 </div>
             </div>
         </div>
