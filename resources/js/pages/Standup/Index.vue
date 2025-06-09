@@ -213,7 +213,7 @@ watch(selectedTeam, (newValue) => {
                                             <PopoverTrigger as-child>
                                                 <Button
                                                     variant="outline"
-                                                    :class="cn('w-[280px] justify-start text-left font-normal', !value && 'text-muted-foreground')"
+                                                    :class="cn('col-span-3 justify-start text-left font-normal', !value && 'text-muted-foreground')"
                                                 >
                                                     <CalendarIcon class="mr-2 h-4 w-4" />
                                                     {{ form.date ? df.format(form.date.toDate(getLocalTimeZone())) : 'Pick a date' }}
