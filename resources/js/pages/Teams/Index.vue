@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import { Button, buttonVariants } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { FormControl, FormField, FormItem, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem, Team, User } from '@/types';
@@ -78,9 +76,9 @@ const filteredUsers = computed(() => {
                             </div>
                             <div class="grid grid-cols-4 items-center gap-4">
                                 <Label for="members" class="text-right"> Members </Label>
-                                <Combobox v-model="form.user_ids" v-model:open="open" :ignore-filter="true">
+                                <Combobox v-model="form.user_ids" v-model:open="open" :ignore-filter="true" class="col-span-3">
                                     <ComboboxAnchor as-child>
-                                        <TagsInput v-model="form.user_ids">
+                                        <TagsInput>
                                             <TagsInputItem v-for="id in form.user_ids" :key="id" :value="id">
                                                 <TagsInputItemText>
                                                     {{ props.users.find((user) => user.id === id)?.name ?? 'Unknown' }}

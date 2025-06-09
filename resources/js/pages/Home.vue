@@ -34,8 +34,12 @@ defineProps<Props>();
                     <div class="grid max-w-screen-xl px-4 py-8 mx-auto lg:gap-8 xl:gap-0 lg:py-16 lg:grid-cols-12">
                         <div class="mr-auto place-self-center lg:col-span-7">
                             <h1 class="max-w-2xl mb-4 text-4xl font-extrabold tracking-tight leading-none md:text-5xl xl:text-6xl dark:text-white">Stay Organized. Get Things Done.</h1>
-                            <p class="max-w-2xl mb-6 font-light text-zinc-600 lg:mb-8 md:text-lg lg:text-xl dark:text-gray-400">Welcome to your new favorite productivity tool.
-                                Easily create, manage, and organize your tasks with custom categories. Whether you're planning your day, managing a project, or just keeping track of errands — we've got you covered. <span class="font-extrabold">Simple. Smart. Stress-free.</span></p>
+                            <p class="max-w-2xl mb-6 font-light text-zinc-600 lg:mb-8 md:text-lg lg:text-xl dark:text-gray-400">Welcome to your all-in-one productivity hub.
+                                Manage your personal tasks with a simple, powerful task manager.
+
+                                Collaborate with your team using our standalone daily standup tool — perfect for quick updates and staying aligned.
+
+                                Work solo or with others. Stay focused either way. <span class="font-extrabold">Simple. Smart. Stress-free.</span></p>
                             <a :href="route('dashboard')" class="inline-flex items-center justify-center px-5 py-3 mr-3 text-base font-medium text-center text-white rounded-lg bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 dark:focus:ring-primary-900">
                                 <Button>
                                 Get started
@@ -56,7 +60,7 @@ defineProps<Props>();
                     <div class="py-8 px-4 mx-auto max-w-screen-xl sm:py-16 lg:px-6">
                         <div class="max-w-screen-md mb-8 lg:mb-16">
                             <h2 class="mb-4 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">A smarter way to manage your day</h2>
-                            <p class="text-gray-500 sm:text-xl dark:text-gray-400">Stay focused, organized, and in control. With simple task lists and customizable categories, our to-do app helps you keep track of everything — from daily routines to big projects. No clutter, just clarity.</p>
+                            <p class="text-gray-500 sm:text-xl dark:text-gray-400">Stay focused, organized, and in control. With simple task lists, customizable categories and a standup tool, our app helps you keep to track of everything — from daily routines to big projects. No clutter, just clarity.</p>
                         </div>
                         <div class="space-y-8 md:grid md:grid-cols-2 lg:grid-cols-3 md:gap-12 md:space-y-0">
                             <div>
@@ -78,7 +82,7 @@ defineProps<Props>();
                                     <svg class="w-5 h-5 text-primary-600 lg:w-6 lg:h-6 dark:text-primary-300" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M6 6V5a3 3 0 013-3h2a3 3 0 013 3v1h2a2 2 0 012 2v3.57A22.952 22.952 0 0110 13a22.95 22.95 0 01-8-1.43V8a2 2 0 012-2h2zm2-1a1 1 0 011-1h2a1 1 0 011 1v1H8V5zm1 5a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z" clip-rule="evenodd"></path><path d="M2 13.692V16a2 2 0 002 2h12a2 2 0 002-2v-2.308A24.974 24.974 0 0110 15c-2.796 0-5.487-.46-8-1.308z"></path></svg>
                                 </div>
                                 <h3 class="mb-2 text-xl font-bold dark:text-white">Business Automation</h3>
-                                <p class="text-gray-500 dark:text-gray-400">Save time by turning routine tasks into smart workflows. Whether it’s recurring to-dos, reminders, or status updates — automation keeps your work moving, even when you're not looking.</p>
+                                <p class="text-gray-500 dark:text-gray-400">Save time with smart workflows for recurring tasks, reminders, and status updates. Plus, simplify daily standups with quick team check-ins that keep everyone aligned and projects moving forward.</p>
                             </div>
                             <div>
                                 <div class="flex justify-center items-center mb-4 w-10 h-10 rounded-full bg-primary-100 lg:h-12 lg:w-12 dark:bg-primary-900">
@@ -92,7 +96,7 @@ defineProps<Props>();
                                     <svg class="w-5 h-5 text-primary-600 lg:w-6 lg:h-6 dark:text-primary-300" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z"></path></svg>
                                 </div>
                                 <h3 class="mb-2 text-xl font-bold dark:text-white">Enterprise Design</h3>
-                                <p class="text-gray-500 dark:text-gray-400">Designed for businesses, our todo app boosts team productivity with easy task management, customizable categories, and secure collaboration.</p>
+                                <p class="text-gray-500 dark:text-gray-400">Designed for businesses, our app boosts team productivity with easy task management, customizable categories, and secure collaboration.</p>
                             </div>
                             <div>
                                 <div class="flex justify-center items-center mb-4 w-10 h-10 rounded-full bg-primary-100 lg:h-12 lg:w-12 dark:bg-primary-900">

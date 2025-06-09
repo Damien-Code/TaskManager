@@ -120,7 +120,7 @@ watch(selectedTeam, (newValue) => {
         },
         {
             preserveScroll: true,
-            preserveState: true,
+            preserveState: false,
         },
     );
 });
@@ -188,11 +188,6 @@ watch(selectedTeam, (newValue) => {
                                     </div>
                                 </div>
                             </CardContent>
-                            <CardFooter>
-                                <Button class="w-full">
-                                    <Check />
-                                </Button>
-                            </CardFooter>
                         </Card>
                     </template>
                     <div v-if="standups.length === 0">
@@ -257,29 +252,6 @@ watch(selectedTeam, (newValue) => {
                     />
                     <div class="mx-auto flex justify-between">
                         <Heading title="Team Members" description="Invite your team members to collaborate" />
-
-                        <Dialog>
-                            <DialogTrigger as-child>
-                                <Button variant="outline">
-                                    <CirclePlus />
-                                </Button>
-                            </DialogTrigger>
-                            <DialogContent class="sm:max-w-[425px]">
-                                <DialogHeader>
-                                    <DialogTitle>Add new team members</DialogTitle>
-                                    <DialogDescription> Make changes to your profile here. Click save when you're done. </DialogDescription>
-                                </DialogHeader>
-                                <div class="grid gap-4 py-4">
-                                    <div class="grid grid-cols-4 items-center gap-4">
-                                        <Label for="name" class="text-right"> Name </Label>
-                                        <Input id="name" value="Pedro Duarte" class="col-span-3" />
-                                    </div>
-                                </div>
-                                <DialogFooter>
-                                    <Button type="submit"> Save changes</Button>
-                                </DialogFooter>
-                            </DialogContent>
-                        </Dialog>
                     </div>
                     <div class="overflow-scroll">
                         <div v-for="user in users" :key="user.id" class="flex flex-row gap-6 py-2">
