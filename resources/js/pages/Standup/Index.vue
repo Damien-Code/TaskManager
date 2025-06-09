@@ -14,10 +14,10 @@ import { getInitials } from '@/composables/useInitials';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { cn } from '@/lib/utils';
 import { type BreadcrumbItem, type SharedData, Standup, Team, User } from '@/types';
-import { Head, router, useForm, usePage } from '@inertiajs/vue3';
+import { Head, Link, router, useForm, usePage } from '@inertiajs/vue3';
 import { CalendarDate, DateFormatter, type DateValue, getLocalTimeZone } from '@internationalized/date';
 import { CalendarIcon, Check, CirclePlus } from 'lucide-vue-next';
-import { computed, onMounted, ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { toast } from 'vue-sonner';
 // import { useRoute } from 'vue-router'
 
@@ -48,12 +48,11 @@ interface Props {
 
 const props = defineProps<Props>();
 
-console.log(props.teams)
+console.log(props.teams);
 
 const getAvatar = (user: User) => {
     return computed(() => user.avatar && user.avatar !== '');
 };
-
 
 const df = new DateFormatter('nl-NL', {
     dateStyle: 'long',
@@ -77,19 +76,21 @@ const submitStandup = () => {
         preserveScroll: true,
         onSuccess: () => {
             const team = form.team_id;
-            const date = form.date
-                ? new Date(form.date).toLocaleDateString('nl-NL')
-                : undefined;
+            const date = form.date ? new Date(form.date).toLocaleDateString('nl-NL') : undefined;
             form.reset();
             toast.success('Daily standup is successfully added!');
             // Navigeer opnieuw met de juiste team + datum in URL
-            router.get(route('daily-standup.index'), {
-                team,
-                date,
-            }, {
-                preserveScroll: true,
-                preserveState: true
-            });
+            router.get(
+                route('daily-standup.index'),
+                {
+                    team,
+                    date,
+                },
+                {
+                    preserveScroll: true,
+                    preserveState: true,
+                },
+            );
         },
     });
 };
@@ -107,13 +108,17 @@ const showDate = (date: Date) => {
 };
 
 watch(selectedTeam, (newValue) => {
-    router.get(route('daily-standup.index'), {
-        team: newValue || undefined,
-        date: dateDate ? new Date(dateDate).toLocaleDateString() : null
-    }, {
-        preserveScroll: true,
-        preserveState: true,
-    });
+    router.get(
+        route('daily-standup.index'),
+        {
+            team: newValue || undefined,
+            date: dateDate ? new Date(dateDate).toLocaleDateString() : null,
+        },
+        {
+            preserveScroll: true,
+            preserveState: true,
+        },
+    );
 });
 </script>
 
@@ -121,11 +126,13 @@ watch(selectedTeam, (newValue) => {
     <Head title="Dashboard" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div class="border-sidebar-border/70 dark:border-sidebar-border flex justify-between rounded-xl border p-4 mt-4 flex-col md:flex-row items-center">
-            <div class="flex items-center gap-4 mb-4 md:mb-0">
+        <div
+            class="border-sidebar-border/70 dark:border-sidebar-border mt-4 flex flex-col items-center justify-between rounded-xl border p-4 md:flex-row"
+        >
+            <div class="mb-4 flex items-center md:mb-0">
                 <Select v-model="selectedTeam">
                     <SelectTrigger class="w-[300px]">
-                        <SelectValue placeholder="Pick your team"/>
+                        <SelectValue placeholder="Pick your team" />
                     </SelectTrigger>
                     <SelectContent>
                         <SelectItem v-for="team in props.teams" :key="team.id" :value="team.id">
@@ -134,130 +141,14 @@ watch(selectedTeam, (newValue) => {
                     </SelectContent>
                 </Select>
             </div>
-            <div class="w-2/5">
-                <Heading title="Your team" :description="selectedTeam"/>
-            </div>
+            <Link :href="route('teams.index')"><Button variant="outline">Manage teams</Button></Link>
         </div>
-        <div v-if="!selectedTeam" class="border-sidebar-border/70 dark:border-sidebar-border flex justify-between rounded-xl border p-4 mt-4">
-            <Heading title="Please select a team" description="After you picked a team, you are ready to submit your standups!"/>
+        <div v-if="!selectedTeam" class="border-sidebar-border/70 dark:border-sidebar-border mt-4 flex justify-between rounded-xl border p-4">
+            <Heading title="Please select a team" description="After you picked a team, you are ready to submit your standups!" />
         </div>
         <div v-else class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
-            <div class="grid auto-rows-min gap-4 md:grid-cols-3">
-                <div class="border-sidebar-border/70 dark:border-sidebar-border relative aspect-video overflow-hidden rounded-xl border p-4">
-                    <Dialog>
-                        <DialogTrigger as-child>
-                            <Button variant="outline"> Create new standup</Button>
-                        </DialogTrigger>
-                        <DialogContent class="sm:max-w-[600px]">
-                            <form @submit.prevent="submitStandup">
-                                <DialogHeader>
-                                    <DialogTitle>Create a new standup</DialogTitle>
-                                    <DialogDescription> Prepare a new standup and show the team on what you are working on! </DialogDescription>
-                                </DialogHeader>
-                                <div class="grid gap-4 py-4">
-                                    <div class="grid grid-cols-4 items-center gap-4">
-                                        <Label for="date" class="text-right"> The date of the standup </Label>
-                                        <Popover>
-                                            <PopoverTrigger as-child>
-                                                <Button
-                                                    variant="outline"
-                                                    :class="cn('w-[280px] justify-start text-left font-normal', !value && 'text-muted-foreground')"
-                                                >
-                                                    <CalendarIcon class="mr-2 h-4 w-4" />
-                                                    {{ form.date ? df.format(form.date.toDate(getLocalTimeZone())) : 'Pick a date' }}
-                                                </Button>
-                                            </PopoverTrigger>
-                                            <PopoverContent class="w-auto p-0">
-                                                <Calendar v-model="form.date" initial-focus />
-                                            </PopoverContent>
-                                        </Popover>
-                                    </div>
-                                    <div class="grid grid-cols-4 items-center gap-4">
-                                        <Label for="accomplishment" class="text-right"> What did you accomplish? </Label>
-                                        <Textarea v-model="form.accomplishment" placeholder="Type your accomplishments here." class="col-span-3" />
-                                    </div>
-                                    <div class="grid grid-cols-4 items-center gap-4">
-                                        <Label for="doing" class="text-right"> What are you going to do? </Label>
-                                        <Textarea v-model="form.doing" placeholder="Type the things you are going to do here." class="col-span-3" />
-                                    </div>
-                                    <div class="grid grid-cols-4 items-center gap-4">
-                                        <Label for="reflection" class="text-right"> What could have gone better? </Label>
-                                        <Textarea v-model="form.reflection" placeholder="Type your reflection here." class="col-span-3" />
-                                    </div>
-                                    <!--                                    <input type="hidden" v-model="form.team_id" />-->
-                                </div>
-                                <DialogFooter>
-                                    <Button type="submit"> Save changes</Button>
-                                </DialogFooter>
-                            </form>
-                        </DialogContent>
-                    </Dialog>
-                    <Dialog>
-                        <DialogTrigger as-child>
-                            <Button variant="outline"> Create new Team</Button>
-                        </DialogTrigger>
-                        <DialogContent class="sm:max-w-[600px]">
-                            <form @submit.prevent="submitStandup">
-                                <DialogHeader>
-                                    <DialogTitle>Create a new Team</DialogTitle>
-                                    <DialogDescription> Prepare a new standup and show the team on what you are working on! </DialogDescription>
-                                </DialogHeader>
-                                <div class="grid gap-4 py-4">
-                                    <div class="grid grid-cols-4 items-center gap-4">
-                                        <Label for="accomplishment" class="text-right"> What will the team be called?</Label>
-                                        <Input class="col-span-3" placeholder="Name" />
-                                    </div>
-                                </div>
-                                <DialogFooter>
-                                    <Button type="submit"> Save changes</Button>
-                                </DialogFooter>
-                            </form>
-                        </DialogContent>
-                    </Dialog>
-                </div>
-                <div class="border-sidebar-border/70 dark:border-sidebar-border relative aspect-video overflow-hidden rounded-xl border p-4"></div>
-                <div class="border-sidebar-border/70 dark:border-sidebar-border relative aspect-video overflow-hidden rounded-xl border p-4">
-                    <div class="flex justify-between">
-                        <Heading title="Team Members" description="Invite your team members to collaborate" />
-
-                        <Dialog>
-                            <DialogTrigger as-child>
-                                <Button variant="outline">
-                                    <CirclePlus />
-                                </Button>
-                            </DialogTrigger>
-                            <DialogContent class="sm:max-w-[425px]">
-                                <DialogHeader>
-                                    <DialogTitle>Add new team members</DialogTitle>
-                                    <DialogDescription> Make changes to your profile here. Click save when you're done. </DialogDescription>
-                                </DialogHeader>
-                                <div class="grid gap-4 py-4">
-                                    <div class="grid grid-cols-4 items-center gap-4">
-                                        <Label for="name" class="text-right"> Name </Label>
-                                        <Input id="name" value="Pedro Duarte" class="col-span-3" />
-                                    </div>
-                                </div>
-                                <DialogFooter>
-                                    <Button type="submit"> Save changes </Button>
-                                </DialogFooter>
-                            </DialogContent>
-                        </Dialog>
-                    </div>
-                    <div class="h-full overflow-scroll">
-                        <div v-for="user in users" :key="user.id" class="flex flex-row gap-6 py-2">
-                            <Avatar class="h-8 w-8 overflow-hidden rounded-lg">
-                                <AvatarImage v-if="getAvatar(user)" :src="user.avatar" :alt="user.name" />
-                                <AvatarFallback class="rounded-lg text-black dark:text-white">
-                                    {{ getInitials(user.name) }}
-                                </AvatarFallback>
-                            </Avatar>
-                            <HeadingSmall :title="user.name" :description="user.email" />
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="grid auto-rows-min gap-4 md:grid-cols-3">
-                <div class="border-sidebar-border/70 dark:border-sidebar-border col-span-2 rounded-xl border p-4">
+            <div class="flex min-w-3/5 flex-col justify-between gap-4 md:flex-row">
+                <div class="border-sidebar-border/70 dark:border-sidebar-border w-full rounded-xl border p-4">
                     <template v-for="standup in standups" :key="standup.accomplishment">
                         <Card :class="cn('col-span-3 mx-auto mb-4', $attrs.class ?? '')">
                             <CardHeader class="flex justify-between">
@@ -304,8 +195,99 @@ watch(selectedTeam, (newValue) => {
                         <Heading title="No standups found for this date" />
                     </div>
                 </div>
-                <div class="border-sidebar-border/70 dark:border-sidebar-border rounded-xl border p-4">
-                    <Calendar @update:model-value="showDate" :model-value="dateValue" :weekday-format="'short'" class="w-fit rounded-md" />
+                <div class="border-sidebar-border/70 dark:border-sidebar-border rounded-xl border p-4 h-fit">
+                    <!--                Create standup modal-->
+                    <Dialog>
+                        <DialogTrigger as-child>
+                            <Button class="mb-12 w-full"> Create new standup</Button>
+                        </DialogTrigger>
+                        <DialogContent class="sm:max-w-[600px]">
+                            <form @submit.prevent="submitStandup">
+                                <DialogHeader>
+                                    <DialogTitle>Create a new standup</DialogTitle>
+                                    <DialogDescription> Prepare a new standup and show the team on what you are working on! </DialogDescription>
+                                </DialogHeader>
+                                <div class="grid gap-4 py-4">
+                                    <div class="grid grid-cols-4 items-center gap-4">
+                                        <Label for="date" class="text-right"> The date of the standup </Label>
+                                        <Popover>
+                                            <PopoverTrigger as-child>
+                                                <Button
+                                                    variant="outline"
+                                                    :class="cn('w-[280px] justify-start text-left font-normal', !value && 'text-muted-foreground')"
+                                                >
+                                                    <CalendarIcon class="mr-2 h-4 w-4" />
+                                                    {{ form.date ? df.format(form.date.toDate(getLocalTimeZone())) : 'Pick a date' }}
+                                                </Button>
+                                            </PopoverTrigger>
+                                            <PopoverContent class="w-auto p-0">
+                                                <Calendar v-model="form.date" initial-focus />
+                                            </PopoverContent>
+                                        </Popover>
+                                    </div>
+                                    <div class="grid grid-cols-4 items-center gap-4">
+                                        <Label for="accomplishment" class="text-right"> What did you accomplish? </Label>
+                                        <Textarea v-model="form.accomplishment" placeholder="Type your accomplishments here." class="col-span-3" />
+                                    </div>
+                                    <div class="grid grid-cols-4 items-center gap-4">
+                                        <Label for="doing" class="text-right"> What are you going to do? </Label>
+                                        <Textarea v-model="form.doing" placeholder="Type the things you are going to do here." class="col-span-3" />
+                                    </div>
+                                    <div class="grid grid-cols-4 items-center gap-4">
+                                        <Label for="reflection" class="text-right"> What could have gone better? </Label>
+                                        <Textarea v-model="form.reflection" placeholder="Type your reflection here." class="col-span-3" />
+                                    </div>
+                                    <!--                                    <input type="hidden" v-model="form.team_id" />-->
+                                </div>
+                                <DialogFooter>
+                                    <Button type="submit"> Save changes</Button>
+                                </DialogFooter>
+                            </form>
+                        </DialogContent>
+                    </Dialog>
+                    <Calendar
+                        @update:model-value="showDate"
+                        :model-value="dateValue"
+                        :weekday-format="'short'"
+                        class="mx-auto mb-12 w-fit rounded-md"
+                    />
+                    <div class="mx-auto flex justify-between">
+                        <Heading title="Team Members" description="Invite your team members to collaborate" />
+
+                        <Dialog>
+                            <DialogTrigger as-child>
+                                <Button variant="outline">
+                                    <CirclePlus />
+                                </Button>
+                            </DialogTrigger>
+                            <DialogContent class="sm:max-w-[425px]">
+                                <DialogHeader>
+                                    <DialogTitle>Add new team members</DialogTitle>
+                                    <DialogDescription> Make changes to your profile here. Click save when you're done. </DialogDescription>
+                                </DialogHeader>
+                                <div class="grid gap-4 py-4">
+                                    <div class="grid grid-cols-4 items-center gap-4">
+                                        <Label for="name" class="text-right"> Name </Label>
+                                        <Input id="name" value="Pedro Duarte" class="col-span-3" />
+                                    </div>
+                                </div>
+                                <DialogFooter>
+                                    <Button type="submit"> Save changes</Button>
+                                </DialogFooter>
+                            </DialogContent>
+                        </Dialog>
+                    </div>
+                    <div class="overflow-scroll">
+                        <div v-for="user in users" :key="user.id" class="flex flex-row gap-6 py-2">
+                            <Avatar class="h-8 w-8 overflow-hidden rounded-lg">
+                                <AvatarImage v-if="getAvatar(user)" :src="user.avatar" :alt="user.name" />
+                                <AvatarFallback class="rounded-lg text-black dark:text-white">
+                                    {{ getInitials(user.name) }}
+                                </AvatarFallback>
+                            </Avatar>
+                            <HeadingSmall :title="user.name" :description="user.email" />
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
