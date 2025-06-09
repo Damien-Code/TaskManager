@@ -3,16 +3,21 @@
 namespace App\Http\Controllers;
 
 use App\Models\Team;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class TeamController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        dd('test');
+        return Inertia::render('Teams/Index', [
+            'teams' => $request->user()->teams()->get(),
+            'users' => User::all(),
+        ]);
     }
 
     /**
@@ -28,7 +33,17 @@ class TeamController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required',
+            'user_ids' => 'required',
+            'user_ids.*' => 'exists:users,id'
+        ]);
+        $team = Team::create([
+            'name' => $validated['name'],
+        ]);
+        $team->users()->attach(auth()->id());
+        $team->users()->syncWithoutDetaching($validated['user_ids']);
+        return redirect()->back();
     }
 
     /**

@@ -23,6 +23,10 @@ import { toast } from 'vue-sonner';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
+      title: 'Dashboard',
+      href: '/dashboard'
+    },
+    {
         title: 'Daily Standup',
         href: '/daily-standup',
     },
