@@ -15,7 +15,7 @@ import { type BreadcrumbItem, type Task, type TaskCategory } from '@/types';
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group';
 
 
-const df = new DateFormatter('en-US', {
+const df = new DateFormatter('nl-NL', {
     dateStyle: 'long',
 });
 

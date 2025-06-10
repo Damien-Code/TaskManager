@@ -19,7 +19,7 @@ const breadcrumbs: BreadcrumbItem[] = [
     { title: 'Dashboard', href: '/dashboard' },
     { title: 'Tasks', href: '/tasks' },
 ];
-const df = new DateFormatter('en-US', {
+const df = new DateFormatter('nl-NL', {
     dateStyle: 'long',
 });
 

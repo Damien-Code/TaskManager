@@ -40,7 +40,7 @@ const fileSelected = (event: Event) => {
 
     form.media = file;
 };
-const df = new DateFormatter('en-US', {
+const df = new DateFormatter('nl-NL', {
     dateStyle: 'long',
 });
 
