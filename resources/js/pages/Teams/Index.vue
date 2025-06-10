@@ -160,7 +160,7 @@ const filteredUsers = computed(() => {
                 <TableRow v-for="team in teams" :key="team.id">
                     <TableCell>{{ team.name }}</TableCell>
                     <TableCell class="flex gap-x-2 text-right">
-                        <Link :class="buttonVariants({ variant: 'default' })" :href="`/task-categories/${team.id}/edit`">Edit </Link>
+                        <Link :class="buttonVariants({ variant: 'default' })" href="#">Edit </Link>
                         <Button variant="destructive" class="mr-2" @click="leaveTeam(team.id)">Leave this team</Button>
                     </TableCell>
                 </TableRow>
