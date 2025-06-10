@@ -4,12 +4,29 @@
 
 ## What does it do?:
 
-<ol>
-  <li>Create an account</li>
+<ul>
   <li>Create todo's, categories and set dates</li>
   <li>Create a team, and start with daily stand-ups</li>
   <li>Filter stand-ups on date and see who did what</li>
+</ul>
+
+### How to use the daily stand-up platform?
+
+<ol>
+  <li>Create an account</li>
+  <li>Create a team and search for members</li>
+  <li>Start writing your stand-ups</li>
+  <li>Filter on date, and see who did what</li>
 </ol>
+
+### How to use the taskmanager?
+
+<ol>
+  <li>Create an account</li>
+  <li>Create a todo or create a category to add to a todo</li>
+  <li>Edit and mark todo's as done</li>
+</ol>
+
 
 ## Want to try it out?
 <p>https://taskmanager.laravel.cloud/</p>
