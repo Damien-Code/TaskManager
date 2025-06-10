@@ -1,16 +1,25 @@
 <script setup lang="ts">
 import { Button, buttonVariants } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Combobox, ComboboxAnchor, ComboboxEmpty, ComboboxGroup, ComboboxInput, ComboboxItem, ComboboxList } from '@/components/ui/combobox';
+import {
+    Dialog,
+    DialogClose,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { TagsInput, TagsInputInput, TagsInputItem, TagsInputItemDelete, TagsInputItemText } from '@/components/ui/tags-input';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem, Team, User } from '@/types';
 import { Head, Link, router, useForm } from '@inertiajs/vue3';
-import { toast } from 'vue-sonner';
-import { computed, ref } from 'vue';
 import { useFilter } from 'reka-ui';
-import { Combobox, ComboboxAnchor, ComboboxEmpty, ComboboxGroup, ComboboxInput, ComboboxItem, ComboboxList } from '@/components/ui/combobox';
-import { TagsInput, TagsInputInput, TagsInputItem, TagsInputItemDelete, TagsInputItemText } from '@/components/ui/tags-input';
+import { computed, ref } from 'vue';
+import { toast } from 'vue-sonner';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -46,11 +55,14 @@ const submitTeam = () => {
 const leaveTeam = (teamId: number) => {
     router.delete(route('teams.destroy', teamId), {
         preserveState: true,
-        // onSucces    s: () => {
-        //     toast.success('You have left the team')
-        // },
+        onSuccess: () => {
+            toast.success('You have left this team.');
+        },
+        onError: () => {
+            toast.error('Something has gone wrong.');
+        },
     });
-}
+};
 
 const open = ref(false);
 const searchTerm = ref('');
@@ -60,7 +72,6 @@ const filteredUsers = computed(() => {
     const available = props.users.filter((user) => !form.user_ids.includes(user.id));
     return searchTerm.value ? available.filter((user) => contains(user.name, searchTerm.value)) : available;
 });
-
 </script>
 
 <template>
@@ -129,7 +140,9 @@ const filteredUsers = computed(() => {
                             </div>
                         </div>
                         <DialogFooter>
-                            <Button type="submit"> Create team</Button>
+                            <DialogClose as-child>
+                                <Button type="submit"> Create team</Button>
+                            </DialogClose>
                         </DialogFooter>
                     </form>
                 </DialogContent>

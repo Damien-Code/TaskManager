@@ -4,9 +4,17 @@ import HeadingSmall from '@/components/HeadingSmall.vue';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+    Dialog,
+    DialogClose,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from '@/components/ui/dialog';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
@@ -16,15 +24,15 @@ import { cn } from '@/lib/utils';
 import { type BreadcrumbItem, type SharedData, Standup, Team, User } from '@/types';
 import { Head, Link, router, useForm, usePage } from '@inertiajs/vue3';
 import { CalendarDate, DateFormatter, type DateValue, getLocalTimeZone } from '@internationalized/date';
-import { CalendarIcon, Check, CirclePlus } from 'lucide-vue-next';
+import { CalendarIcon } from 'lucide-vue-next';
 import { computed, ref, watch } from 'vue';
 import { toast } from 'vue-sonner';
 // import { useRoute } from 'vue-router'
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-      title: 'Dashboard',
-      href: '/dashboard'
+        title: 'Dashboard',
+        href: '/dashboard',
     },
     {
         title: 'Daily Standup',
@@ -96,6 +104,9 @@ const submitStandup = () => {
                 },
             );
         },
+        onError: () => {
+            toast.error('Something has gone wrong.')
+        }
     });
 };
 
@@ -145,7 +156,9 @@ watch(selectedTeam, (newValue) => {
                     </SelectContent>
                 </Select>
             </div>
-            <Link :href="route('teams.index')"><Button variant="outline">Manage teams</Button></Link>
+            <Link :href="route('teams.index')">
+                <Button variant="outline">Manage teams</Button>
+            </Link>
         </div>
         <div v-if="!selectedTeam" class="border-sidebar-border/70 dark:border-sidebar-border mt-4 flex justify-between rounded-xl border p-4">
             <Heading title="Please select a team" description="After you picked a team, you are ready to submit your standups!" />
@@ -194,7 +207,7 @@ watch(selectedTeam, (newValue) => {
                         <Heading title="No standups found for this date" />
                     </div>
                 </div>
-                <div class="border-sidebar-border/70 dark:border-sidebar-border rounded-xl border p-4 h-fit">
+                <div class="border-sidebar-border/70 dark:border-sidebar-border h-fit rounded-xl border p-4">
                     <!--                Create standup modal-->
                     <Dialog>
                         <DialogTrigger as-child>
@@ -239,7 +252,9 @@ watch(selectedTeam, (newValue) => {
                                     <!--                                    <input type="hidden" v-model="form.team_id" />-->
                                 </div>
                                 <DialogFooter>
-                                    <Button type="submit"> Save changes</Button>
+                                    <DialogClose as-child>
+                                        <Button type="submit"> Save changes</Button>
+                                    </DialogClose>
                                 </DialogFooter>
                             </form>
                         </DialogContent>
