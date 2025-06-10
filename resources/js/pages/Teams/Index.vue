@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { type BreadcrumbItem, Team, User } from '@/types';
-import { Head, Link, useForm } from '@inertiajs/vue3';
+import { Head, Link, router, useForm } from '@inertiajs/vue3';
 import { toast } from 'vue-sonner';
 import { computed, ref } from 'vue';
 import { useFilter } from 'reka-ui';
@@ -43,6 +43,15 @@ const submitTeam = () => {
     });
 };
 
+const leaveTeam = (teamId: number) => {
+    router.delete(route('teams.destroy', teamId), {
+        preserveState: true,
+        // onSucces    s: () => {
+        //     toast.success('You have left the team')
+        // },
+    });
+}
+
 const open = ref(false);
 const searchTerm = ref('');
 const { contains } = useFilter({ sensitivity: 'base' });
@@ -76,7 +85,7 @@ const filteredUsers = computed(() => {
                             </div>
                             <div class="grid grid-cols-4 items-center gap-4">
                                 <Label for="members" class="text-right"> Members </Label>
-                                <Combobox v-model="form.user_ids" v-model:open="open" :ignore-filter="true" class="col-span-3">
+                                <Combobox v-model="form.user_ids" v-model:open="open" :ignore-filter="true">
                                     <ComboboxAnchor as-child>
                                         <TagsInput>
                                             <TagsInputItem v-for="id in form.user_ids" :key="id" :value="id">
@@ -139,7 +148,7 @@ const filteredUsers = computed(() => {
                     <TableCell>{{ team.name }}</TableCell>
                     <TableCell class="flex gap-x-2 text-right">
                         <Link :class="buttonVariants({ variant: 'default' })" :href="`/task-categories/${team.id}/edit`">Edit </Link>
-                        <Button variant="destructive" class="mr-2">Leave this team</Button>
+                        <Button variant="destructive" class="mr-2" @click="leaveTeam(team.id)">Leave this team</Button>
                     </TableCell>
                 </TableRow>
             </TableBody>

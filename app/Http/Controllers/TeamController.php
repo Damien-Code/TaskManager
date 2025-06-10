@@ -75,6 +75,12 @@ class TeamController extends Controller
      */
     public function destroy(Team $team)
     {
-        //
+        $user = auth()->user();
+        $team->users()->detach($user->id);
+        if ($team->users()->count() == 1 && $team->users()->detach()) {
+            $team->users()->detach($user->id);
+            $team->delete();
+        }
+        return redirect()->back();
     }
 }
