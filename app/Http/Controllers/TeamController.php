@@ -35,7 +35,7 @@ class TeamController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required',
-            'user_ids' => 'required|array',
+            'user_ids' => 'array',
             'user_ids.*' => 'exists:users,id'
         ]);
         $team = Team::create([
