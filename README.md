@@ -2,7 +2,7 @@
 
 ## A sideproject of mine where you can have daily standups with your team and also create todo's to stay up-to-date.
 
-##What does it do?:
+## What does it do?:
 
 <ol>
   <li>Create an account</li>
@@ -11,5 +11,5 @@
   <li>Filter stand-ups on date and see who did what</li>
 </ol>
 
-##Want to try it out?
+## Want to try it out?
 <p>https://taskmanager.laravel.cloud/</p>
