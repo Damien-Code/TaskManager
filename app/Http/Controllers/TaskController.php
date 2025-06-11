@@ -6,6 +6,7 @@ use App\Http\Requests\StoreTaskRequest;
 use App\Http\Requests\UpdateTaskRequest;
 use App\Models\Task;
 use App\Models\TaskCategory;
+use Carbon\Carbon;
 use Illuminate\Container\Attributes\Auth;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -48,10 +49,8 @@ class TaskController extends Controller
      */
     public function store(StoreTaskRequest $request)
     {
-        //Task::create($request->validated() + ['is_completed' => false]);
-
-        //$task = Task::create($request->validated() + ['is_completed' => false]);
-        $task = Task::create($request->safe(['name', 'due_date']) + ['is_completed' => false] + ['user_id' => auth()->id()]);
+        $due_date = Carbon::parse($request['due_date'])->format('Y-m-d');
+        $task = Task::create($request->safe(['name']) + ['is_completed' => false] + ['user_id' => auth()->id()] + ['due_date' => $due_date]);
         if ($request->hasFile('media')){
             $task->addMedia($request->file('media'))->toMediaCollection();
         }

@@ -53,7 +53,8 @@ const breadcrumbs: BreadcrumbItem[] = [
 const submitForm = () => {
     form.transform((data) => ({
         ...data,
-        due_date: data.due_date ? data.due_date.toDate(getLocalTimeZone()) : null,
+        due_date: data.due_date ? new Date(data.due_date).toLocaleDateString() : null
+        // due_date: data.due_date ? data.due_date.toDate(getLocalTimeZone()) : null,
     })).post(route('tasks.store'), {
         forceFormData: true,
         preserveScroll: true,

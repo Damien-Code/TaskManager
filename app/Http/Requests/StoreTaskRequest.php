@@ -27,7 +27,6 @@ class StoreTaskRequest extends FormRequest
             'media' => 'nullable|file|max:10240',
             'categories' => 'nullable|array',
             'categories.*' => 'exists:task_categories,id'
-
         ];
     }
 }
