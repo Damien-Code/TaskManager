@@ -82,7 +82,7 @@ const submitStandup = () => {
     form.transform((data) => ({
         ...data,
         team: form.team_id,
-        date: data.date ? new Date(data.date).toLocaleDateString() : null,
+        date: data.date ? new Date(data.date).toLocaleDateString('nl-NL') : null,
     })).post(route('daily-standup.store'), {
         forceFormData: true,
         preserveScroll: true,
@@ -117,7 +117,7 @@ const showDate = (date: Date) => {
     router.visit(
         route('daily-standup.index', {
             team: props.selectedTeam ?? null,
-            date: date ? new Date(date).toLocaleDateString() : null,
+            date: date ? new Date(date).toLocaleDateString('nl-NL') : null,
         }),
     );
 };
