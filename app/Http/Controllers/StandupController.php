@@ -91,7 +91,7 @@ class StandupController extends Controller
             'accomplishment' => 'required',
             'doing' => 'required',
             'reflection' => 'required',
-            'date' => 'required|date',
+            'date' => 'date',
             'team_id' => 'required|exists:teams,id'
         ]);
         $validated['date'] = Carbon::parse($validated['date']);

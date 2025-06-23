@@ -122,9 +122,9 @@ const submitStandup = () => {
     });
 };
 
-const updateStandup = (standup: Standup, formData: any) => {
+const updateStandup = (standupId: any, formData: any) => {
     router.post(
-        route('daily-standup.update', standup.id),
+        route('daily-standup.update', standupId),
         {
             ...formData,
             date: formData.date ? new Date(formData.date).toLocaleDateString('nl-NL') : null,
@@ -134,6 +134,7 @@ const updateStandup = (standup: Standup, formData: any) => {
             forceFormData: true,
             preserveScroll: true,
             onSuccess: () => {
+                modalOpen.value = false;
                 const team = form.team_id;
                 const date = form.date ? new Date(form.date).toLocaleDateString('nl-NL') : undefined;
                 form.reset();
@@ -222,7 +223,7 @@ watch(selectedTeam, (newValue) => {
                                 <Dialog v-model:open="modalOpen">
 
                                     <DialogContent class="sm:max-w-[600px]">
-                                        <form @submit.prevent="updateStandup(standup, selectedStandup)" :id="selectedStandup.id">
+                                        <form @submit.prevent="updateStandup(selectedStandup.id, selectedStandup)" :id="selectedStandup.id">
                                             <DialogHeader>
                                                 <DialogTitle>Create a new standup</DialogTitle>
                                                 <DialogDescription> Prepare a new standup and show the team on what you are working on! </DialogDescription>
@@ -230,20 +231,20 @@ watch(selectedTeam, (newValue) => {
                                             <div class="grid gap-4 py-4">
                                                 <div class="grid grid-cols-4 items-center gap-4">
                                                     <Label for="date" class="text-right"> The date of the standup </Label>
-                                                    <Popover>
-                                                        <PopoverTrigger as-child>
-                                                            <Button
-                                                                variant="outline"
-                                                                :class="cn('col-span-3 justify-start text-left font-normal', !value && 'text-muted-foreground')"
-                                                            >
-                                                                <CalendarIcon class="mr-2 h-4 w-4" />
-                                                                {{ selectedStandup.date ? df.format(selectedStandup.date.toDate(getLocalTimeZone())) : 'Pick a date' }}
-                                                            </Button>
-                                                        </PopoverTrigger>
-                                                        <PopoverContent class="w-auto p-0">
-                                                            <Calendar v-model="selectedStandup.date" initial-focus />
-                                                        </PopoverContent>
-                                                    </Popover>
+<!--                                                    <Popover>-->
+<!--                                                        <PopoverTrigger as-child>-->
+<!--                                                            <Button-->
+<!--                                                                variant="outline"-->
+<!--                                                                :class="cn('col-span-3 justify-start text-left font-normal', !value && 'text-muted-foreground')"-->
+<!--                                                            >-->
+<!--                                                                <CalendarIcon class="mr-2 h-4 w-4" />-->
+<!--                                                                {{ selectedStandup.date ? df.format(selectedStandup.date.toDate(getLocalTimeZone())) : 'Pick a date' }}-->
+<!--                                                            </Button>-->
+<!--                                                        </PopoverTrigger>-->
+<!--                                                        <PopoverContent class="w-auto p-0">-->
+<!--                                                            <Calendar v-model="selectedStandup.date" initial-focus />-->
+<!--                                                        </PopoverContent>-->
+<!--                                                    </Popover>-->
                                                 </div>
                                                 <div class="grid grid-cols-4 items-center gap-4">
                                                     <Label for="accomplishment" class="text-right"> What did you accomplish? </Label>
