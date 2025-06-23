@@ -87,7 +87,16 @@ class StandupController extends Controller
      */
     public function update(Request $request, Standup $standup)
     {
-        dd($request);
+        $validated = $request->validate([
+            'accomplishment' => 'required',
+            'doing' => 'required',
+            'reflection' => 'required',
+            'date' => 'required|date',
+            'team_id' => 'required|exists:teams,id'
+        ]);
+        $validated['date'] = Carbon::parse($validated['date']);
+        $standup->update($validated);
+        return redirect()->route('daily-standup.index');
     }
 
     /**

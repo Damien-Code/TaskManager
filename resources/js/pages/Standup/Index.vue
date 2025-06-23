@@ -126,13 +126,31 @@ const updateStandup = (standup: Standup, formData: any) => {
     router.post(
         route('daily-standup.update', standup.id),
         {
-            ...form.data(),
-            due_date: form.data().due_date ? form.data().due_date.toDate(getLocalTimeZone()) : null,
+            ...formData,
+            date: formData.date ? new Date(formData.date).toLocaleDateString('nl-NL') : null,
             _method: 'PATCH'
         },
         {
             forceFormData: true,
             preserveScroll: true,
+            onSuccess: () => {
+                const team = form.team_id;
+                const date = form.date ? new Date(form.date).toLocaleDateString('nl-NL') : undefined;
+                form.reset();
+                toast.success('Daily standup is successfully added!');
+                // Navigeer opnieuw met de juiste team + datum in URL
+                router.get(
+                    route('daily-standup.index'),
+                    {
+                        team,
+                        date,
+                    },
+                    {
+                        preserveScroll: true,
+                        preserveState: true,
+                    },
+                );
+            },
         },
     );
 }
@@ -193,7 +211,7 @@ watch(selectedTeam, (newValue) => {
         <div v-else class="flex h-full flex-1 flex-col gap-4 rounded-xl p-4">
             <div class="flex min-w-3/5 flex-col justify-between gap-4 md:flex-row">
                 <div class="border-sidebar-border/70 dark:border-sidebar-border w-full rounded-xl border p-4">
-                    <template v-for="standup in standups" :key="standup.accomplishment">
+                    <template v-for="standup in standups" :key="standup.id">
                         <Card :class="cn('col-span-3 mx-auto mb-4', $attrs.class ?? '')">
                             <CardHeader class="flex justify-between">
                                 <div>
@@ -204,7 +222,7 @@ watch(selectedTeam, (newValue) => {
                                 <Dialog v-model:open="modalOpen">
 
                                     <DialogContent class="sm:max-w-[600px]">
-                                        <form @submit.prevent="updateStandup(standup, selectedStandup)">
+                                        <form @submit.prevent="updateStandup(standup, selectedStandup)" :id="selectedStandup.id">
                                             <DialogHeader>
                                                 <DialogTitle>Create a new standup</DialogTitle>
                                                 <DialogDescription> Prepare a new standup and show the team on what you are working on! </DialogDescription>
