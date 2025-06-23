@@ -87,7 +87,7 @@ class StandupController extends Controller
      */
     public function update(Request $request, Standup $standup)
     {
-        //
+        dd($request);
     }
 
     /**

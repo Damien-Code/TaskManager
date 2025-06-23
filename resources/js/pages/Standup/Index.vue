@@ -40,6 +40,19 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
+
+// modal value references
+// Selected row is data
+// modalOpen is the visibility of the modal
+const selectedStandup = ref<Standup>(null!);
+const modalOpen = ref(false);
+
+//Closes the dialog/modal
+const openModal = (standup: Standup) => {
+    selectedStandup.value = standup;
+    modalOpen.value = true;
+};
+
 const page = usePage<SharedData>();
 // const route = useRoute();
 const teamId = new URLSearchParams(window.location.search).get('team');
@@ -60,7 +73,6 @@ interface Props {
 
 const props = defineProps<Props>();
 
-console.log(props.teams);
 
 const getAvatar = (user: User) => {
     return computed(() => user.avatar && user.avatar !== '');
@@ -109,6 +121,21 @@ const submitStandup = () => {
         }
     });
 };
+
+const updateStandup = (standup: Standup, formData: any) => {
+    router.post(
+        route('daily-standup.update', standup.id),
+        {
+            ...form.data(),
+            due_date: form.data().due_date ? form.data().due_date.toDate(getLocalTimeZone()) : null,
+            _method: 'PATCH'
+        },
+        {
+            forceFormData: true,
+            preserveScroll: true,
+        },
+    );
+}
 
 const dateDate = new Date(props.date);
 const dateValue = new CalendarDate(dateDate.getFullYear(), dateDate.getMonth() + 1, dateDate.getDate());
@@ -173,7 +200,55 @@ watch(selectedTeam, (newValue) => {
                                     <CardTitle>{{ standup.user.name }}</CardTitle>
                                     <CardDescription>{{ standup.date ? df.format(new Date(standup.date)) : '' }} </CardDescription>
                                 </div>
-                                <Button v-if="standup.user_id === user.id">Edit</Button>
+                                <Button @click="openModal(standup)">Edit</Button>
+                                <Dialog v-model:open="modalOpen">
+
+                                    <DialogContent class="sm:max-w-[600px]">
+                                        <form @submit.prevent="updateStandup(standup, selectedStandup)">
+                                            <DialogHeader>
+                                                <DialogTitle>Create a new standup</DialogTitle>
+                                                <DialogDescription> Prepare a new standup and show the team on what you are working on! </DialogDescription>
+                                            </DialogHeader>
+                                            <div class="grid gap-4 py-4">
+                                                <div class="grid grid-cols-4 items-center gap-4">
+                                                    <Label for="date" class="text-right"> The date of the standup </Label>
+                                                    <Popover>
+                                                        <PopoverTrigger as-child>
+                                                            <Button
+                                                                variant="outline"
+                                                                :class="cn('col-span-3 justify-start text-left font-normal', !value && 'text-muted-foreground')"
+                                                            >
+                                                                <CalendarIcon class="mr-2 h-4 w-4" />
+                                                                {{ selectedStandup.date ? df.format(selectedStandup.date.toDate(getLocalTimeZone())) : 'Pick a date' }}
+                                                            </Button>
+                                                        </PopoverTrigger>
+                                                        <PopoverContent class="w-auto p-0">
+                                                            <Calendar v-model="selectedStandup.date" initial-focus />
+                                                        </PopoverContent>
+                                                    </Popover>
+                                                </div>
+                                                <div class="grid grid-cols-4 items-center gap-4">
+                                                    <Label for="accomplishment" class="text-right"> What did you accomplish? </Label>
+                                                    <Textarea v-model="selectedStandup.accomplishment" placeholder="Type your accomplishments here." class="col-span-3" />
+                                                </div>
+                                                <div class="grid grid-cols-4 items-center gap-4">
+                                                    <Label for="doing" class="text-right"> What are you going to do? </Label>
+                                                    <Textarea v-model="selectedStandup.doing" placeholder="Type the things you are going to do here." class="col-span-3" />
+                                                </div>
+                                                <div class="grid grid-cols-4 items-center gap-4">
+                                                    <Label for="reflection" class="text-right"> What could have gone better? </Label>
+                                                    <Textarea v-model="selectedStandup.reflection" placeholder="Type your reflection here." class="col-span-3" />
+                                                </div>
+                                                <!--                                    <input type="hidden" v-model="form.team_id" />-->
+                                            </div>
+                                            <DialogFooter>
+                                                <DialogClose as-child>
+                                                    <Button type="submit"> Save changes</Button>
+                                                </DialogClose>
+                                            </DialogFooter>
+                                        </form>
+                                    </DialogContent>
+                                </Dialog>
                             </CardHeader>
                             <CardContent class="grid gap-4">
                                 <div class="flex items-center space-x-4 rounded-md border p-4">
