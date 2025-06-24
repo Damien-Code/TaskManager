@@ -127,6 +127,7 @@ const updateStandup = (standupId: any, formData: any) => {
         route('daily-standup.update', standupId),
         {
             ...formData,
+            team: formData.team,
             date: formData.date ? new Date(formData.date).toLocaleDateString('nl-NL') : null,
             _method: 'PATCH'
         },
